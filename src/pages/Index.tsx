@@ -2,6 +2,14 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2, LineChart, Shield } from "lucide-react";
+import { LineChart as ReLineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+
+const sampleCostData = [
+  { mes: "Jan", previsto: 20000, real: 18000 },
+  { mes: "Fev", previsto: 40000, real: 39000 },
+  { mes: "Mar", previsto: 65000, real: 72000 },
+  { mes: "Abr", previsto: 90000, real: 88000 },
+];
 
 const Index = () => {
   const navigate = useNavigate();
@@ -21,8 +29,53 @@ const Index = () => {
     }
   };
 
+  const handleContactClick = () => {
+    const section = document.getElementById("contato");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Cabeçalho público fixo */}
+      <header className="sticky top-0 z-30 border-b bg-background/80 backdrop-blur-md">
+        <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-3">
+          <div className="flex items-center gap-2">
+            <span className="h-6 w-6 rounded-lg bg-primary/10" aria-hidden="true" />
+            <div className="leading-tight">
+              <p className="text-sm font-semibold tracking-tight">Minha Obra</p>
+              <p className="text-[11px] text-muted-foreground">Controle simples da sua construção</p>
+            </div>
+          </div>
+          <nav className="flex items-center gap-5 text-sm">
+            <button
+              type="button"
+              onClick={handleSecondaryCta}
+              className="text-muted-foreground hover:text-foreground transition-colors story-link"
+            >
+              Funcionalidades
+            </button>
+            <button
+              type="button"
+              onClick={handleContactClick}
+              className="text-muted-foreground hover:text-foreground transition-colors story-link"
+            >
+              Contato
+            </button>
+            <Button
+              size="sm"
+              variant="outline"
+              className="hover-scale"
+              type="button"
+              onClick={handlePrimaryCta}
+            >
+              Login
+            </Button>
+          </nav>
+        </div>
+      </header>
+
       <main className="page-shell mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 pb-12 pt-10">
         {/* Hero */}
         <section className="grid gap-10 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] items-center animate-fade-in">
@@ -150,7 +203,74 @@ const Index = () => {
             </div>
           </div>
         </section>
-      </main>
+
+        {/* Métricas visuais de exemplo */}
+        <section className="mt-14 space-y-6 animate-fade-in">
+          <header className="space-y-2">
+            <h2 className="text-xl font-semibold tracking-tight">Exemplo de evolução de custos</h2>
+            <p className="max-w-2xl text-sm text-muted-foreground">
+              Veja como o Minha Obra pode mostrar a diferença entre o orçamento previsto e o que já foi gasto
+              ao longo dos meses de obra.
+            </p>
+          </header>
+
+          <div className="card-elevated border border-border/70 bg-background/90 p-5">
+            <div className="h-64 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <ReLineChart data={sampleCostData} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="mes" tickLine={false} axisLine={{ stroke: "hsl(var(--border))" }} />
+                  <YAxis
+                    tickFormatter={(v) => `R$ ${v / 1000}k`}
+                    width={48}
+                    tickLine={false}
+                    axisLine={{ stroke: "hsl(var(--border))" }}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      background: "hsl(var(--popover))",
+                      borderColor: "hsl(var(--border))",
+                      borderRadius: 12,
+                    }}
+                    formatter={(value: number) => [`R$ ${value.toLocaleString("pt-BR")}`, ""]}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="previsto"
+                    stroke="hsl(var(--primary))"
+                    strokeWidth={2}
+                    dot={{ r: 3 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="real"
+                    stroke="hsl(var(--accent))"
+                    strokeWidth={2}
+                    dot={{ r: 3 }}
+                  />
+                </ReLineChart>
+              </ResponsiveContainer>
+            </div>
+            <p className="mt-3 text-[11px] leading-snug text-muted-foreground">
+              Estes valores são fictícios, apenas para ilustrar como o painel mostra, em tempo real, se a
+              sua obra está dentro ou acima do orçamento planejado.
+            </p>
+          </div>
+        </section>
+
+        {/* Contato */}
+        <section
+          id="contato"
+          className="mt-16 border-t border-border/60 pt-8 text-sm text-muted-foreground"
+        >
+          <p className="font-medium text-foreground">Fale com a gente</p>
+          <p className="mt-1 max-w-xl">
+            Tem dúvidas ou sugestões sobre o Minha Obra? Envie um e-mail para
+            <span className="font-medium"> contato@minhaobra.app</span> e vamos responder o mais rápido
+            possível.
+          </p>
+        </section>
+       </main>
     </div>
   );
 };
