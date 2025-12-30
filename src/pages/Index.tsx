@@ -87,12 +87,13 @@ const Index = () => {
               <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl md:text-6xl">
                 Sua obra sob controle.
                 <br />
-                <span className="text-[hsl(var(--primary))]">Sem surpresas no orçamento.</span>
+                <span className="text-[hsl(var(--primary))]">Sem sustos no orçamento.</span>
               </h1>
-            <p className="max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-              Veja em um painel simples quanto já foi gasto, o que ainda falta pagar e em que etapa a obra
-              está. Sem planilhas e sem termos complicados.
-            </p>
+              <p className="max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+                Veja em um painel simples quanto já foi gasto, o que ainda falta pagar e em que etapa a obra
+                está. Tudo organizado num lugar só, para você decidir com calma e segurança.
+              </p>
+            </div>
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-3 pt-1 md:justify-start">
@@ -114,11 +115,11 @@ const Index = () => {
             <div className="flex flex-wrap items-center justify-center gap-6 pt-2 text-xs text-muted-foreground md:justify-start">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-primary" />
-                <span>Sem cartão de crédito</span>
+                <span>Sem compromisso e você pode cancelar quando quiser</span>
               </div>
               <div className="flex items-center gap-2">
                 <Shield className="h-4 w-4 text-primary" />
-                <span>Seus dados protegidos</span>
+                <span>Seus dados protegidos com tecnologia de banco de dados</span>
               </div>
             </div>
           </div>
@@ -166,7 +167,7 @@ const Index = () => {
             </h2>
             <p className="mx-auto max-w-2xl text-sm text-muted-foreground">
               Você não precisa entender de engenharia para saber se a obra está indo bem. Explicamos tudo
-              com frases curtas e indicadores claros.
+              com frases curtas, exemplos reais e indicadores em verde, amarelo e vermelho.
             </p>
           </header>
 
@@ -250,8 +251,9 @@ const Index = () => {
 
             <div className="mt-4 rounded-2xl border border-dashed border-primary/30 bg-primary/5 px-4 py-3 text-xs text-muted-foreground">
               <p>
-                O painel foi pensado para quem não é da área técnica: textos curtos, indicadores com cores
-                claras e nada de termos complicados.
+                Foi tudo pensado para reduzir a ansiedade com dinheiro de obra: valores sempre atualizados,
+                alertas simples quando algo foge do previsto e linguagem para quem está fazendo a primeira
+                construção.
               </p>
             </div>
           </div>
@@ -306,7 +308,8 @@ const Index = () => {
               Quem já passou por obra sabe como é importante ter controle
             </h2>
             <p className="mx-auto max-w-2xl text-sm text-muted-foreground">
-              Depoimentos fictícios para ilustrar como o Minha Obra pode ajudar donos de obra no dia a dia.
+              Histórias fictícias, mas baseadas em situações reais de quem já sofreu com obra sem controle.
+              A ideia é mostrar que você não está sozinho e que dá para ter mais tranquilidade.
             </p>
           </header>
 
@@ -353,8 +356,8 @@ const Index = () => {
         >
           <h2 className="text-3xl font-semibold sm:text-4xl">Comece sua obra organizada hoje</h2>
           <p className="mx-auto mt-4 max-w-2xl text-sm opacity-90">
-            Crie sua conta, cadastre sua obra e veja em minutos onde está indo o dinheiro. Sem compromisso,
-            sem cartão de crédito.
+            Crie sua conta, cadastre sua obra e veja em minutos se os gastos estão dentro do combinado.
+            Você controla o cancelamento a qualquer momento.
           </p>
           <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <Button size="lg" variant="outline" className="hover-scale" onClick={goToAuth}>
