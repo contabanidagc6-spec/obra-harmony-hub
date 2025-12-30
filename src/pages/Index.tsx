@@ -74,7 +74,7 @@ const Index = () => {
         </div>
       </header>
 
-      <main id="topo" className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 pb-20 pt-10">
+      <main id="topo" className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 pb-24 pt-16">
         {/* HERO */}
         <section className="animate-enter">
           <div className="space-y-7 text-center md:text-left max-w-3xl">
@@ -84,7 +84,7 @@ const Index = () => {
             </div>
 
             <div className="space-y-3">
-              <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
+              <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl md:text-6xl">
                 Sua obra sob controle.
                 <br />
                 <span className="text-[hsl(var(--primary))]">Sem surpresas no orçamento.</span>
@@ -125,7 +125,7 @@ const Index = () => {
         </section>
 
         {/* FAIXA DE MÉTRICAS */}
-        <section className="mt-12 grid gap-4 rounded-2xl bg-muted/60 px-4 py-4 text-xs sm:grid-cols-3 sm:text-sm animate-fade-in">
+        <section className="mt-16 grid gap-4 rounded-2xl bg-muted/60 px-4 py-4 text-xs sm:grid-cols-3 sm:text-sm animate-fade-in">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
               <Wallet className="h-4 w-4 text-primary" />
@@ -158,10 +158,10 @@ const Index = () => {
         </section>
 
         {/* BENEFÍCIOS */}
-        <section id="beneficios" className="mt-16 space-y-8 animate-fade-in">
+        <section id="beneficios" className="mt-20 space-y-8 animate-fade-in">
           <header className="space-y-2 text-center">
             <p className="text-xs font-medium uppercase tracking-[0.16em] text-primary">Benefícios</p>
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
               Pensado para quem está construindo pela primeira vez
             </h2>
             <p className="mx-auto max-w-2xl text-sm text-muted-foreground">
@@ -209,13 +209,13 @@ const Index = () => {
         {/* COMO FUNCIONA / DEMO VISUAL */}
         <section
           id="como-funciona"
-          className="mt-20 grid items-start gap-10 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] animate-fade-in"
+          className="mt-24 grid items-start gap-10 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] animate-fade-in"
         >
           <div className="space-y-5">
             <p className="text-xs font-medium uppercase tracking-[0.16em] text-primary">
               Como funciona
             </p>
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
               Em poucos passos, você enxerga toda a sua obra
             </h2>
             <ol className="space-y-4 text-sm text-muted-foreground">
@@ -299,10 +299,10 @@ const Index = () => {
         </section>
 
         {/* DEPOIMENTOS */}
-        <section className="mt-20 space-y-8 animate-fade-in">
+        <section className="mt-24 space-y-8 animate-fade-in">
           <header className="space-y-2 text-center">
             <p className="text-xs font-medium uppercase tracking-[0.16em] text-primary">Depoimentos</p>
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
               Quem já passou por obra sabe como é importante ter controle
             </h2>
             <p className="mx-auto max-w-2xl text-sm text-muted-foreground">
@@ -349,10 +349,10 @@ const Index = () => {
         {/* CONTATO / CTA FINAL */}
         <section
           id="contato"
-          className="mt-16 rounded-3xl bg-[hsl(var(--primary))] px-6 py-12 text-center text-[hsl(var(--primary-foreground))] animate-fade-in"
+          className="mt-24 rounded-3xl bg-[hsl(var(--primary))] px-6 py-16 text-center text-[hsl(var(--primary-foreground))] animate-fade-in"
         >
-          <h2 className="text-2xl font-semibold sm:text-3xl">Comece sua obra organizada hoje</h2>
-          <p className="mx-auto mt-3 max-w-2xl text-sm opacity-90">
+          <h2 className="text-3xl font-semibold sm:text-4xl">Comece sua obra organizada hoje</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-sm opacity-90">
             Crie sua conta, cadastre sua obra e veja em minutos onde está indo o dinheiro. Sem compromisso,
             sem cartão de crédito.
           </p>
