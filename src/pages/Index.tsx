@@ -2,6 +2,15 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2, LineChart, Shield, Wallet, CalendarDays } from "lucide-react";
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
+
+const etapaGastosData = [
+  { name: "Fundação", gasto: 45000 },
+  { name: "Estrutura", gasto: 38000 },
+  { name: "Alvenaria", gasto: 29000 },
+  { name: "Acabamento", gasto: 22000 },
+  { name: "Finalização", gasto: 9000 },
+];
 
 const Index = () => {
   const navigate = useNavigate();
@@ -296,12 +305,58 @@ const Index = () => {
                 <p className="text-sm font-semibold">R$ 111.600,00</p>
               </div>
               <div className="rounded-xl bg-muted px-3 py-2">
-                <p className="text-muted-foreground">Saldo disponível</p>
+                <p className="text-muted-foreground">Gastos projetados</p>
                 <p className="text-sm font-semibold">R$ 68.400,00</p>
               </div>
               <div className="rounded-xl bg-muted px-3 py-2">
                 <p className="text-muted-foreground">Próx. pagamentos</p>
                 <p className="text-sm font-semibold">R$ 7.500,00</p>
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-3">
+              <div className="flex items-center justify-between text-xs">
+                <p className="font-semibold text-muted-foreground">Gastos por etapa (exemplo)</p>
+                <span className="rounded-full bg-background/40 px-2 py-0.5 text-[10px] text-primary">
+                  Cada barra representa uma fase da obra
+                </span>
+              </div>
+              <div className="h-44 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={etapaGastosData} margin={{ top: 4, right: 8, left: -16, bottom: 0 }}>
+                    <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="hsl(var(--muted))" />
+                    <XAxis
+                      dataKey="name"
+                      tickLine={false}
+                      axisLine={false}
+                      tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                    />
+                    <YAxis
+                      tickLine={false}
+                      axisLine={false}
+                      tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                    />
+                    <Tooltip
+                      cursor={{ fill: "hsl(var(--muted))/0.4" }}
+                      contentStyle={{
+                        backgroundColor: "hsl(var(--background))",
+                        borderRadius: 12,
+                        border: "1px solid hsl(var(--border))",
+                        fontSize: 12,
+                      }}
+                      formatter={(value: number) => [
+                        value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }),
+                        "Gasto na etapa",
+                      ]}
+                    />
+                    <Bar
+                      dataKey="gasto"
+                      radius={[8, 8, 0, 0]}
+                      fill="hsl(var(--primary))"
+                      stroke="hsl(var(--primary))"
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
             </div>
           </div>
