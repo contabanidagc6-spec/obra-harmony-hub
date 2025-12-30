@@ -216,9 +216,11 @@ export const DashboardPage = () => {
             Em poucos segundos você enxerga se os gastos e o andamento estão dentro do combinado.
           </p>
         </div>
-        <Button size="sm" variant="outline" className="hidden sm:inline-flex">
-          Exportar relatório rápido
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button size="sm" variant="outline" className="hidden sm:inline-flex">
+            Exportar relatório rápido
+          </Button>
+        </div>
       </section>
 
       {loading && (
