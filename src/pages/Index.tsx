@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2, LineChart, Shield, Wallet, CalendarDays } from "lucide-react";
-import landingHero from "@/assets/landing-hero.png";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -77,8 +76,8 @@ const Index = () => {
 
       <main id="topo" className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 pb-20 pt-10">
         {/* HERO */}
-        <section className="grid items-center gap-10 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] animate-enter">
-          <div className="space-y-7">
+        <section className="animate-enter">
+          <div className="space-y-7 text-center md:text-left max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-background/80 px-3 py-1 text-[11px] text-muted-foreground shadow-sm hover-scale">
               <span className="h-1.5 w-1.5 rounded-full bg-primary pulse" />
               <span>Acompanhe cada gasto da obra em tempo real</span>
@@ -96,7 +95,7 @@ const Index = () => {
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-3 pt-1">
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-1 md:justify-start">
               <Button size="lg" className="hover-scale" onClick={goToAuth}>
                 Começar agora
                 <ArrowRight className="ml-2 h-4 w-4" />
@@ -112,7 +111,7 @@ const Index = () => {
               </Button>
             </div>
 
-            <div className="flex flex-wrap items-center gap-6 pt-2 text-xs text-muted-foreground">
+            <div className="flex flex-wrap items-center justify-center gap-6 pt-2 text-xs text-muted-foreground md:justify-start">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-primary" />
                 <span>Sem cartão de crédito</span>
@@ -121,19 +120,6 @@ const Index = () => {
                 <Shield className="h-4 w-4 text-primary" />
                 <span>Seus dados protegidos</span>
               </div>
-            </div>
-          </div>
-
-          <div className="relative flex items-center justify-center">
-            <div className="absolute inset-0 -z-10 bg-gradient-to-tr from-primary/15 via-accent/10 to-background opacity-80 blur-3xl" />
-            <div className="card-elevated relative w-full max-w-md overflow-hidden animate-scale-in hover-scale">
-              <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent pointer-events-none" />
-              <img
-                src={landingHero}
-                alt="Dashboard do Minha Obra com evolução de custos"
-                className="h-full w-full object-cover"
-                loading="lazy"
-              />
             </div>
           </div>
         </section>
