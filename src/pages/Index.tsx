@@ -60,6 +60,13 @@ const Index = () => {
             </button>
             <button
               type="button"
+              onClick={() => scrollToSection("planos")}
+              className="story-link text-muted-foreground transition-colors hover:text-foreground"
+            >
+              Planos
+            </button>
+            <button
+              type="button"
               onClick={() => scrollToSection("contato")}
               className="story-link text-muted-foreground transition-colors hover:text-foreground"
             >
@@ -448,6 +455,114 @@ const Index = () => {
               <div className="space-y-1 text-sm">
                 <p className="font-semibold">Luciana, casa de veraneio</p>
                 <p className="text-xs text-muted-foreground">Obra em Itapema - SC</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        {/* PLANOS / PREÇOS */}
+        <section
+          id="planos"
+          className="mt-24 space-y-8 animate-fade-in"
+          aria-labelledby="planos-heading"
+        >
+          <header className="space-y-2 text-center">
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-primary">Planos</p>
+            <h2 id="planos-heading" className="text-3xl font-semibold tracking-tight sm:text-4xl">
+              Escolha o nível de controle que faz sentido para sua obra
+            </h2>
+            <p className="mx-auto max-w-2xl text-sm text-muted-foreground">
+              Valores mensais para você acompanhar sua construção sem sustos. Você pode cancelar quando quiser,
+              sem multa nem fidelidade.
+            </p>
+          </header>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {/* Essencial */}
+            <article className="card-elevated flex h-full flex-col justify-between p-6">
+              <div className="space-y-3">
+                <h3 className="text-lg font-semibold">Essencial</h3>
+                <p className="text-sm text-muted-foreground">
+                  Para quem quer sair do caderno e ter o básico organizado em um só lugar.
+                </p>
+                <p className="text-2xl font-semibold">
+                  R$ 29,90
+                  <span className="text-xs font-normal text-muted-foreground"> / mês</span>
+                </p>
+                <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                  <li>• 1 obra ativa por vez</li>
+                  <li>• Registro simples de gastos por etapa</li>
+                  <li>• Visão geral de pagamentos já feitos</li>
+                  <li>• Gráficos básicos de andamento</li>
+                </ul>
+              </div>
+              <div className="mt-6">
+                <Button className="w-full hover-scale" size="lg" onClick={goToAuth}>
+                  Começar com Essencial
+                </Button>
+                <p className="mt-2 text-center text-[11px] text-muted-foreground">
+                  Assinatura simulada para demonstração. Você ajusta depois.
+                </p>
+              </div>
+            </article>
+
+            {/* Plus - mais escolhido */}
+            <article className="relative flex h-full flex-col justify-between rounded-3xl border border-[hsl(var(--primary))] bg-[hsl(var(--primary))/0.04] p-6 shadow-md shadow-[hsl(var(--primary))/0.25]">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[hsl(var(--primary))] px-3 py-1 text-[11px] font-medium text-[hsl(var(--primary-foreground))] shadow-sm">
+                Mais escolhido
+              </div>
+              <div className="space-y-3 pt-2">
+                <h3 className="text-lg font-semibold">Plus</h3>
+                <p className="text-sm text-muted-foreground">
+                  Para quem quer acompanhar de perto orçamento, etapas e decisões com mais detalhes.
+                </p>
+                <p className="text-2xl font-semibold">
+                  R$ 49,90
+                  <span className="text-xs font-normal text-muted-foreground"> / mês</span>
+                </p>
+                <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                  <li>• Tudo do Essencial</li>
+                  <li>• Controle de decisões com impacto financeiro</li>
+                  <li>• Linha do tempo de pagamentos futuros (7 e 30 dias)</li>
+                  <li>• Upload e consulta de comprovantes da obra</li>
+                  <li>• Links de visualização para compartilhar com arquiteto ou família</li>
+                </ul>
+              </div>
+              <div className="mt-6">
+                <Button className="w-full hover-scale" size="lg" onClick={goToAuth}>
+                  Escolher plano Plus
+                </Button>
+                <p className="mt-2 text-center text-[11px] text-muted-foreground">
+                  Ideal para a maioria das obras residenciais e reformas.
+                </p>
+              </div>
+            </article>
+
+            {/* Pro Premium */}
+            <article className="card-elevated flex h-full flex-col justify-between p-6">
+              <div className="space-y-3">
+                <h3 className="text-lg font-semibold">Pro Premium</h3>
+                <p className="text-sm text-muted-foreground">
+                  Para quem acompanha mais de uma obra ao mesmo tempo ou quer histórico completo.
+                </p>
+                <p className="text-2xl font-semibold">
+                  R$ 157,90
+                  <span className="text-xs font-normal text-muted-foreground"> / mês</span>
+                </p>
+                <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                  <li>• Até 5 obras ativas em paralelo</li>
+                  <li>• Histórico completo de gastos e decisões das obras anteriores</li>
+                  <li>• Exportação de relatórios financeiros detalhados</li>
+                  <li>• Priorização no suporte por e-mail</li>
+                </ul>
+              </div>
+              <div className="mt-6">
+                <Button className="w-full hover-scale" size="lg" onClick={goToAuth}>
+                  Ficar com Pro Premium
+                </Button>
+                <p className="mt-2 text-center text-[11px] text-muted-foreground">
+                  Pensado para quem gerencia várias obras ou presta consultoria.
+                </p>
               </div>
             </article>
           </div>
