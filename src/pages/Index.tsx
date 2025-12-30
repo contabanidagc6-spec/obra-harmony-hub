@@ -312,10 +312,58 @@ const Index = () => {
           </div>
         </section>
 
+        {/* DEPOIMENTOS */}
+        <section className="mt-20 space-y-8 animate-fade-in">
+          <header className="space-y-2 text-center">
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-primary">Depoimentos</p>
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+              Quem já passou por obra sabe como é importante ter controle
+            </h2>
+            <p className="mx-auto max-w-2xl text-sm text-muted-foreground">
+              Depoimentos fictícios para ilustrar como o Minha Obra pode ajudar donos de obra no dia a dia.
+            </p>
+          </header>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            <article className="card-elevated flex h-full flex-col justify-between gap-4 p-6 transition-transform duration-200 hover:-translate-y-1 hover-scale">
+              <p className="text-sm text-muted-foreground">
+                "Eu anotava tudo em caderno e nunca sabia quanto já tinha gasto. Agora vejo em segundos se
+                estou dentro do orçamento."
+              </p>
+              <div className="space-y-1 text-sm">
+                <p className="font-semibold">Mariana, 1ª obra da família</p>
+                <p className="text-xs text-muted-foreground">Casa de 120 m² em Sorocaba - SP</p>
+              </div>
+            </article>
+
+            <article className="card-elevated flex h-full flex-col justify-between gap-4 p-6 transition-transform duration-200 hover:-translate-y-1 hover-scale">
+              <p className="text-sm text-muted-foreground">
+                "Com o Minha Obra ficou mais fácil conversar com o pedreiro. Eu levo o celular e mostro o que
+                já foi pago e o que falta."
+              </p>
+              <div className="space-y-1 text-sm">
+                <p className="font-semibold">Carlos, reforma de apartamento</p>
+                <p className="text-xs text-muted-foreground">Reforma de 60 m² em Curitiba - PR</p>
+              </div>
+            </article>
+
+            <article className="card-elevated flex h-full flex-col justify-between gap-4 p-6 transition-transform duration-200 hover:-translate-y-1 hover-scale">
+              <p className="text-sm text-muted-foreground">
+                "Acompanhei cada etapa da obra mesmo morando em outra cidade. Os gráficos me ajudaram a
+                enxergar se estava tudo dentro do combinado."
+              </p>
+              <div className="space-y-1 text-sm">
+                <p className="font-semibold">Luciana, casa de veraneio</p>
+                <p className="text-xs text-muted-foreground">Obra em Itapema - SC</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
         {/* CONTATO / CTA FINAL */}
         <section
           id="contato"
-          className="mt-20 rounded-3xl bg-[hsl(var(--primary))] px-6 py-12 text-center text-[hsl(var(--primary-foreground))] animate-fade-in"
+          className="mt-16 rounded-3xl bg-[hsl(var(--primary))] px-6 py-12 text-center text-[hsl(var(--primary-foreground))] animate-fade-in"
         >
           <h2 className="text-2xl font-semibold sm:text-3xl">Comece sua obra organizada hoje</h2>
           <p className="mx-auto mt-3 max-w-2xl text-sm opacity-90">
