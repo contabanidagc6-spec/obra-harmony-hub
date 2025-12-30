@@ -2,14 +2,6 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2, LineChart, Shield } from "lucide-react";
-import { LineChart as ReLineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-
-const sampleCostData = [
-  { mes: "Jan", previsto: 20000, real: 18000 },
-  { mes: "Fev", previsto: 40000, real: 39000 },
-  { mes: "Mar", previsto: 65000, real: 72000 },
-  { mes: "Abr", previsto: 90000, real: 88000 },
-];
 
 const Index = () => {
   const navigate = useNavigate();
@@ -29,13 +21,6 @@ const Index = () => {
     }
   };
 
-  const handleContactClick = () => {
-    const section = document.getElementById("contato");
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  };
-
   return (
     <div className="min-h-screen bg-background">
       {/* Cabeçalho público fixo */}
@@ -45,51 +30,55 @@ const Index = () => {
             <span className="h-6 w-6 rounded-lg bg-primary/10" aria-hidden="true" />
             <div className="leading-tight">
               <p className="text-sm font-semibold tracking-tight">Minha Obra</p>
-              <p className="text-[11px] text-muted-foreground">Controle simples da sua construção</p>
+              <p className="text-[11px] text-muted-foreground">Controle total da sua construção</p>
             </div>
           </div>
           <nav className="flex items-center gap-5 text-sm">
             <button
               type="button"
-              onClick={handleSecondaryCta}
-              className="text-muted-foreground hover:text-foreground transition-colors story-link"
+              onClick={() => {
+                const section = document.getElementById("beneficios");
+                section?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
+              className="text-muted-foreground transition-colors story-link hover:text-foreground"
             >
-              Funcionalidades
+              Benefícios
             </button>
             <button
               type="button"
-              onClick={handleContactClick}
-              className="text-muted-foreground hover:text-foreground transition-colors story-link"
+              onClick={handleSecondaryCta}
+              className="text-muted-foreground transition-colors story-link hover:text-foreground"
             >
-              Contato
+              Como funciona
             </button>
             <Button
               size="sm"
-              variant="outline"
               className="hover-scale"
               type="button"
               onClick={handlePrimaryCta}
             >
-              Login
+              Organizar minha obra
             </Button>
           </nav>
         </div>
       </header>
 
-      <main className="page-shell mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 pb-12 pt-10">
+      <main className="page-shell mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 pb-16 pt-10">
         {/* Hero */}
-        <section className="grid gap-10 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] items-center animate-fade-in">
+        <section className="grid items-center gap-10 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] animate-fade-in">
           <div className="space-y-6">
             <p className="inline-flex items-center rounded-full border border-border/60 bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm shadow-sm">
               <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-primary" />
-              Sua obra no controle, sem planilhas
+              Controle total da sua construção
             </p>
             <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
-              Organize cada etapa da sua construção em um só lugar.
+              Controle sua obra.
+              <br />
+              <span className="text-[hsl(var(--primary))]">Sem sustos no orçamento.</span>
             </h1>
             <p className="max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-              Minha Obra é um painel simples para você acompanhar gastos, etapas, decisões e documentos
-              da sua construção ou reforma, direto do celular.
+              A forma simples de acompanhar custos, etapas e pagamentos da sua construção ou reforma.
+              Chega de planilhas complexas.
             </p>
 
             <div className="flex flex-wrap gap-3 pt-1">
@@ -104,173 +93,147 @@ const Index = () => {
                 type="button"
                 onClick={handleSecondaryCta}
               >
-                Ver como funciona
+                Ver demonstração
               </Button>
             </div>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground pt-2">
+            <div className="flex flex-wrap items-center gap-6 pt-2 text-xs text-muted-foreground">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-primary" />
-                <span>Sem compromisso, você pode testar à vontade.</span>
+                <span>Sem cartão de crédito</span>
               </div>
               <div className="flex items-center gap-2">
                 <Shield className="h-4 w-4 text-primary" />
-                <span>Seus dados protegidos e salvos na nuvem.</span>
+                <span>Setup instantâneo</span>
               </div>
             </div>
           </div>
 
           <div className="relative flex items-center justify-center">
             <div className="absolute inset-0 -z-10 bg-gradient-to-tr from-primary/10 via-accent/10 to-background opacity-80 blur-3xl" />
-            <div className="card-elevated w-full max-w-sm space-y-4 border border-border/70 bg-background/90 p-5 shadow-lg animate-scale-in">
-              <header className="space-y-1">
-                <p className="text-xs font-medium uppercase tracking-[0.18em] text-accent-foreground/80">
-                  Visão geral
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Um resumo da sua obra em tempo real: orçamento, etapas e próximos pagamentos.
-                </p>
-              </header>
+            <div className="card-elevated w-full max-w-md overflow-hidden animate-scale-in hover-scale">
+              <img
+                src={require("@/assets/landing-hero.png")}
+                alt="Casa em construção representando organização da obra"
+                className="h-full w-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </section>
 
-              <div className="grid gap-3 text-sm">
-                <div className="rounded-xl border border-border/70 bg-background/70 p-3 flex items-center justify-between">
-                  <div>
-                    <p className="text-xs text-muted-foreground">Orçamento utilizado</p>
-                    <p className="text-base font-semibold">R$ 85.400</p>
-                  </div>
-                  <LineChart className="h-8 w-8 text-primary" />
+        {/* Benefícios */}
+        <section id="beneficios" className="mt-16 space-y-8 animate-fade-in">
+          <header className="space-y-2 text-center">
+            <h2 className="text-2xl font-semibold tracking-tight">Tudo o que você precisa para gerenciar sua obra</h2>
+            <p className="mx-auto max-w-2xl text-sm text-muted-foreground">
+              Simplificamos o complexo. Mantenha o foco na construção enquanto cuidamos da organização.
+            </p>
+          </header>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            <article className="card-elevated flex flex-col items-start gap-3 p-6 transition-transform duration-200 hover:-translate-y-1 hover-scale">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[hsl(var(--primary))/0.08]">
+                <LineChart className="h-6 w-6 text-[hsl(var(--primary))]" />
+              </div>
+              <h3 className="text-base font-semibold">Controle de Custos</h3>
+              <p className="text-sm text-muted-foreground">
+                Veja quanto já gastou e quanto ainda falta para terminar a obra. Gráficos claros e
+                intuitivos.
+              </p>
+            </article>
+
+            <article className="card-elevated flex flex-col items-start gap-3 p-6 transition-transform duration-200 hover:-translate-y-1 hover-scale">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[hsl(var(--primary))/0.08]">
+                <CheckCircle2 className="h-6 w-6 text-[hsl(var(--primary))]" />
+              </div>
+              <h3 className="text-base font-semibold">Pagamentos Semanais</h3>
+              <p className="text-sm text-muted-foreground">
+                Gerencie mão de obra com valor fechado e acerto final. Nunca mais perca um comprovante.
+              </p>
+            </article>
+
+            <article className="card-elevated flex flex-col items-start gap-3 p-6 transition-transform duration-200 hover:-translate-y-1 hover-scale">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[hsl(var(--primary))/0.08]">
+                <Shield className="h-6 w-6 text-[hsl(var(--primary))]" />
+              </div>
+              <h3 className="text-base font-semibold">Etapas da Obra</h3>
+              <p className="text-sm text-muted-foreground">
+                Acompanhe cada fase, da fundação ao acabamento, e evite atrasos no cronograma.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        {/* Visualização rápida */}
+        <section id="como-funciona" className="mt-20 grid items-center gap-10 md:grid-cols-2 animate-fade-in">
+          <div className="card-elevated flex flex-col items-center gap-6 p-8">
+            <div className="relative flex h-52 w-52 items-center justify-center">
+              <div
+                className="absolute inset-0 rounded-full"
+                style={{
+                  background:
+                    "conic-gradient(hsl(var(--primary)) 0 65%, hsl(var(--muted)) 65% 100%)",
+                }}
+              />
+              <div className="relative flex h-32 w-32 items-center justify-center rounded-full bg-background">
+                <div className="text-center text-sm">
+                  <p className="text-xs text-muted-foreground">Orçamento Total</p>
+                  <p className="text-base font-semibold">R$ 150.000,00</p>
                 </div>
-                <div className="grid grid-cols-3 gap-2 text-xs">
-                  <div className="rounded-lg bg-muted/70 p-2">
-                    <p className="text-muted-foreground">Etapas</p>
-                    <p className="text-sm font-semibold">10</p>
-                  </div>
-                  <div className="rounded-lg bg-muted/70 p-2">
-                    <p className="text-muted-foreground">Concluídas</p>
-                    <p className="text-sm font-semibold text-emerald-500">3</p>
-                  </div>
-                  <div className="rounded-lg bg-muted/70 p-2">
-                    <p className="text-muted-foreground">Pagamentos</p>
-                    <p className="text-sm font-semibold">12</p>
-                  </div>
-                </div>
-                <p className="text-[11px] leading-snug text-muted-foreground">
-                  Os dados acima são apenas um exemplo. Na prática, tudo é atualizado automaticamente a
-                  partir dos seus gastos e etapas.
-                </p>
+              </div>
+            </div>
+
+            <div className="flex w-full justify-around text-xs sm:text-sm">
+              <div className="text-center">
+                <p className="font-semibold text-[hsl(var(--primary))]">65%</p>
+                <p className="text-muted-foreground">Executado</p>
+              </div>
+              <div className="text-center">
+                <p className="font-semibold text-muted-foreground">35%</p>
+                <p className="text-muted-foreground">Disponível</p>
               </div>
             </div>
           </div>
-        </section>
 
-        {/* Como funciona */}
-        <section id="como-funciona" className="mt-14 space-y-6 animate-fade-in">
-          <header className="space-y-2">
-            <h2 className="text-xl font-semibold tracking-tight">Como o Minha Obra ajuda você</h2>
-            <p className="max-w-2xl text-sm text-muted-foreground">
-              Em vez de espalhar informações em planilhas, grupos de mensagem e papéis, você centraliza
-              tudo em um painel visual pensado para quem não é da área técnica.
+          <div className="space-y-5">
+            <h2 className="text-2xl font-semibold tracking-tight">Visualize sua obra em segundos</h2>
+            <p className="text-sm text-muted-foreground">
+              Pare de tentar entender números soltos no WhatsApp ou no caderno. Nossa dashboard
+              transforma dados complexos em visuais simples para você tomar decisões rápidas.
             </p>
-          </header>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="card-elevated flex flex-col gap-2 p-4 animate-fade-in">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-accent-foreground/80">
-                1. Crie sua obra
-              </p>
-              <p className="text-sm font-semibold">Defina nome, orçamento e tipo</p>
-              <p className="text-xs text-muted-foreground">
-                Em poucos minutos você cadastra sua obra e já começa com etapas padrão prontas para usar.
-              </p>
-            </div>
-            <div className="card-elevated flex flex-col gap-2 p-4 animate-fade-in">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-accent-foreground/80">
-                2. Registre gastos
-              </p>
-              <p className="text-sm font-semibold">Acompanhe o orçamento de verdade</p>
-              <p className="text-xs text-muted-foreground">
-                Lance materiais, mão de obra e pagamentos futuros e veja o impacto direto no orçamento.
-              </p>
-            </div>
-            <div className="card-elevated flex flex-col gap-2 p-4 animate-fade-in">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-accent-foreground/80">
-                3. Decida com calma
-              </p>
-              <p className="text-sm font-semibold">Centralize decisões e arquivos</p>
-              <p className="text-xs text-muted-foreground">
-                Guarde orçamentos, fotos e decisões em um só lugar para não se perder no meio da obra.
-              </p>
-            </div>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="mt-0.5 h-4 w-4 text-primary" />
+                <span>Relatórios automáticos de gastos</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="mt-0.5 h-4 w-4 text-primary" />
+                <span>Previsão de término baseada no ritmo atual</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="mt-0.5 h-4 w-4 text-primary" />
+                <span>Alertas de estouro de orçamento</span>
+              </li>
+            </ul>
           </div>
         </section>
 
-        {/* Métricas visuais de exemplo */}
-        <section className="mt-14 space-y-6 animate-fade-in">
-          <header className="space-y-2">
-            <h2 className="text-xl font-semibold tracking-tight">Exemplo de evolução de custos</h2>
-            <p className="max-w-2xl text-sm text-muted-foreground">
-              Veja como o Minha Obra pode mostrar a diferença entre o orçamento previsto e o que já foi gasto
-              ao longo dos meses de obra.
-            </p>
-          </header>
-
-          <div className="card-elevated border border-border/70 bg-background/90 p-5">
-            <div className="h-64 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <ReLineChart data={sampleCostData} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="mes" tickLine={false} axisLine={{ stroke: "hsl(var(--border))" }} />
-                  <YAxis
-                    tickFormatter={(v) => `R$ ${v / 1000}k`}
-                    width={48}
-                    tickLine={false}
-                    axisLine={{ stroke: "hsl(var(--border))" }}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      background: "hsl(var(--popover))",
-                      borderColor: "hsl(var(--border))",
-                      borderRadius: 12,
-                    }}
-                    formatter={(value: number) => [`R$ ${value.toLocaleString("pt-BR")}`, ""]}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="previsto"
-                    stroke="hsl(var(--primary))"
-                    strokeWidth={2}
-                    dot={{ r: 3 }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="real"
-                    stroke="hsl(var(--accent))"
-                    strokeWidth={2}
-                    dot={{ r: 3 }}
-                  />
-                </ReLineChart>
-              </ResponsiveContainer>
-            </div>
-            <p className="mt-3 text-[11px] leading-snug text-muted-foreground">
-              Estes valores são fictícios, apenas para ilustrar como o painel mostra, em tempo real, se a
-              sua obra está dentro ou acima do orçamento planejado.
-            </p>
-          </div>
-        </section>
-
-        {/* Contato */}
-        <section
-          id="contato"
-          className="mt-16 border-t border-border/60 pt-8 text-sm text-muted-foreground"
-        >
-          <p className="font-medium text-foreground">Fale com a gente</p>
-          <p className="mt-1 max-w-xl">
-            Tem dúvidas ou sugestões sobre o Minha Obra? Envie um e-mail para
-            <span className="font-medium"> contato@minhaobra.app</span> e vamos responder o mais rápido
-            possível.
+        {/* CTA final */}
+        <section className="mt-20 rounded-3xl bg-[hsl(var(--primary))] px-6 py-12 text-center text-[hsl(var(--primary-foreground))] animate-fade-in">
+          <h2 className="text-2xl font-semibold">Sua obra organizada desde o primeiro dia</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-sm opacity-90">
+            Chega de planilhas confusas e surpresas no final. Junte-se a proprietários que construíram com
+            tranquilidade.
           </p>
+          <div className="mt-6 flex justify-center">
+            <Button size="lg" variant="outline" className="hover-scale" onClick={handlePrimaryCta}>
+              Criar minha obra agora
+            </Button>
+          </div>
+          <p className="mt-3 text-xs opacity-90">Teste grátis por 14 dias. Não requer cartão.</p>
         </section>
-       </main>
+      </main>
     </div>
   );
 };
