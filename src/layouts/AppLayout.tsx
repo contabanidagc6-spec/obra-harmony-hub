@@ -1,7 +1,12 @@
+import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import type { Tables } from "@/integrations/supabase/types";
+
+type Obra = Tables<"obras">;
 
 const navItems = [
   { label: "Dashboard", to: "/dashboard" },
@@ -16,6 +21,41 @@ const navItems = [
 
 export const AppLayout = () => {
   const location = useLocation();
+  const [obras, setObras] = useState<Obra[]>([]);
+  const [loadingObraHeader, setLoadingObraHeader] = useState(true);
+
+  useEffect(() => {
+    const loadObras = async () => {
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+          setLoadingObraHeader(false);
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from("obras")
+          .select("id, nome, created_at")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: true });
+
+        if (error) throw error;
+
+        setObras((data as Obra[]) || []);
+      } catch (error) {
+        console.error("Erro ao carregar obras para o cabeçalho:", error);
+      } finally {
+        setLoadingObraHeader(false);
+      }
+    };
+
+    loadObras();
+  }, []);
+
+  const currentObra = obras[0] ?? null;
 
   return (
     <div className="page-shell">
@@ -66,7 +106,18 @@ export const AppLayout = () => {
 
           <div className="text-right">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Obra atual</p>
-            <p className="text-sm font-semibold">Casa dos sonhos</p>
+            <p className="text-sm font-semibold">
+              {loadingObraHeader
+                ? "Carregando..."
+                : currentObra
+                ? currentObra.nome
+                : "Nenhuma obra cadastrada"}
+            </p>
+            {obras.length > 1 && (
+              <p className="text-[11px] text-muted-foreground">
+                Você tem {obras.length} obras. Em breve será possível alternar entre elas.
+              </p>
+            )}
           </div>
         </div>
       </header>
@@ -78,9 +129,7 @@ export const AppLayout = () => {
       {location.pathname !== "/" && (
         <div className="fixed inset-x-0 bottom-0 z-20 border-t bg-background/90 backdrop-blur-md">
           <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 px-4 py-3">
-            <div className="text-xs text-muted-foreground">
-              Controle rápido de gastos da obra.
-            </div>
+            <div className="text-xs text-muted-foreground">Controle rápido de gastos da obra.</div>
             <Button asChild size="sm" className="hover-scale">
               <Link to="/gastos/novo">Adicionar gasto</Link>
             </Button>
