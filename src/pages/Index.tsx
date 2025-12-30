@@ -302,15 +302,15 @@ const Index = () => {
             <div className="grid grid-cols-3 gap-3 text-[11px] sm:text-xs">
               <div className="rounded-xl bg-muted px-3 py-2">
                 <p className="text-muted-foreground">Gastos até hoje</p>
-                <p className="text-sm font-semibold">R$ 111.600,00</p>
+                <p className="text-sm font-semibold">R$ 266.600</p>
               </div>
               <div className="rounded-xl bg-muted px-3 py-2">
                 <p className="text-muted-foreground">Gastos projetados</p>
-                <p className="text-sm font-semibold">R$ 68.400,00</p>
+                <p className="text-sm font-semibold">R$ 68.400</p>
               </div>
               <div className="rounded-xl bg-muted px-3 py-2">
                 <p className="text-muted-foreground">Próx. pagamentos</p>
-                <p className="text-sm font-semibold">R$ 7.500,00</p>
+                <p className="text-sm font-semibold">R$ 13.400</p>
               </div>
             </div>
 
@@ -340,7 +340,12 @@ const Index = () => {
                         fontSize: 12,
                       }}
                       formatter={(value: number) => [
-                        value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }),
+                        value.toLocaleString("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 0,
+                        }),
                         "Gasto na etapa",
                       ]}
                     />
@@ -354,12 +359,12 @@ const Index = () => {
                         <Cell
                           key={entry.name}
                           fill={
-                            entry.name === "Acabamento" || entry.name === "Alvenaria"
+                            entry.name === "Acabamento" || entry.name === "Alvenaria" || entry.name === "Finalização"
                               ? "hsl(var(--primary) / 0.5)"
                               : "hsl(var(--primary))"
                           }
                           stroke={
-                            entry.name === "Acabamento" || entry.name === "Alvenaria"
+                            entry.name === "Acabamento" || entry.name === "Alvenaria" || entry.name === "Finalização"
                               ? "hsl(var(--primary) / 0.6)"
                               : "hsl(var(--primary))"
                           }
