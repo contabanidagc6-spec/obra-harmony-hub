@@ -191,7 +191,7 @@ export const DashboardPage = () => {
             Resumo da sua obra
           </h1>
           <p className="text-sm text-muted-foreground">
-            Veja em segundos se os gastos e o andamento estão dentro do combinado.
+            Em poucos segundos você enxerga se os gastos e o andamento estão dentro do combinado.
           </p>
         </div>
         <Button size="sm" variant="outline" className="hidden sm:inline-flex">
@@ -251,7 +251,8 @@ export const DashboardPage = () => {
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <p className="text-muted-foreground">
-              Pequenos desvios em algumas etapas. Ótimo momento para revisar decisões.
+              Pequenos desvios em algumas etapas. Bom momento para conversar com a equipe e ajustar o rumo
+              com calma.
             </p>
           </CardContent>
         </Card>
@@ -331,7 +332,8 @@ export const DashboardPage = () => {
           <CardContent className="space-y-2">
             {alerts.length === 0 && (
               <p className="text-xs text-muted-foreground">
-                Nenhum alerta no momento. Continue acompanhando sua obra por aqui.
+                Nenhum alerta no momento. Siga acompanhando aqui para evitar surpresas no orçamento e no
+                prazo.
               </p>
             )}
 
