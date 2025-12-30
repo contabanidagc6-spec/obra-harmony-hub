@@ -1,194 +1,155 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, LineChart, Shield } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    document.title = "Minha Obra | Criar obra";
-    checkExistingObra();
+    document.title = "Minha Obra | Controle da sua construção";
   }, []);
 
-  const checkExistingObra = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    // Se já tem obra, redireciona para o dashboard
-    const { data: obras } = await supabase
-      .from("obras")
-      .select("id")
-      .eq("user_id", user.id)
-      .limit(1);
-
-    if (obras && obras.length > 0) {
-      navigate("/dashboard");
-    }
+  const handlePrimaryCta = () => {
+    navigate("/auth");
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setSubmitting(true);
-
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast({
-          title: "Autenticação necessária",
-          description: "Você precisa estar logado para criar uma obra.",
-          variant: "destructive",
-        });
-        // TODO: navegar para tela de login quando implementada
-        return;
-      }
-
-      const formData = new FormData(e.currentTarget);
-      const nome = formData.get("nome") as string;
-      const tipo = formData.get("tipo") as string;
-      const areaM2 = formData.get("area") as string;
-      const orcamentoEstimado = formData.get("orcamento") as string;
-      const dataInicio = formData.get("inicio") as string;
-
-      // Criar a obra
-      const { data: obra, error: obraError } = await supabase
-        .from("obras")
-        .insert({
-          user_id: user.id,
-          nome,
-          tipo,
-          area_m2: areaM2 ? parseFloat(areaM2) : null,
-          orcamento_estimado: orcamentoEstimado ? parseFloat(orcamentoEstimado) : null,
-          data_inicio: dataInicio || null,
-        })
-        .select()
-        .single();
-
-      if (obraError) throw obraError;
-
-      // Criar etapas padrão
-      const etapasPadrao = [
-        { nome: "Fundação", ordem: 1 },
-        { nome: "Estrutura", ordem: 2 },
-        { nome: "Alvenaria", ordem: 3 },
-        { nome: "Instalações Elétricas", ordem: 4 },
-        { nome: "Instalações Hidráulicas", ordem: 5 },
-        { nome: "Revestimentos", ordem: 6 },
-        { nome: "Acabamentos", ordem: 7 },
-        { nome: "Pintura", ordem: 8 },
-        { nome: "Pisos", ordem: 9 },
-        { nome: "Louças e Metais", ordem: 10 },
-      ];
-
-      const etapasParaInserir = etapasPadrao.map((etapa) => ({
-        obra_id: obra.id,
-        nome: etapa.nome,
-        status: "nao-iniciada",
-        orcamento_previsto: null,
-      }));
-
-      const { error: etapasError } = await supabase
-        .from("etapas")
-        .insert(etapasParaInserir);
-
-      if (etapasError) throw etapasError;
-
-      toast({
-        title: "Obra criada com sucesso!",
-        description: `${etapasPadrao.length} etapas foram adicionadas automaticamente.`,
-      });
-
-      navigate("/dashboard");
-    } catch (error: any) {
-      toast({
-        title: "Erro ao criar obra",
-        description: error.message || "Tente novamente mais tarde.",
-        variant: "destructive",
-      });
-    } finally {
-      setSubmitting(false);
+  const handleSecondaryCta = () => {
+    const section = document.getElementById("como-funciona");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
   return (
-    <div className="page-shell">
-      <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-between px-4 pb-10 pt-8">
-        <div>
-          <header className="mb-8 space-y-2">
-            <p className="text-xs font-medium uppercase tracking-[0.18em] text-accent-foreground/80">
-              Minha Obra
+    <div className="min-h-screen bg-background">
+      <main className="page-shell mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 pb-12 pt-10">
+        {/* Hero */}
+        <section className="grid gap-10 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] items-center animate-fade-in">
+          <div className="space-y-6">
+            <p className="inline-flex items-center rounded-full border border-border/60 bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-sm shadow-sm">
+              <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-primary" />
+              Sua obra no controle, sem planilhas
             </p>
-            <h1 className="text-2xl font-semibold leading-tight">
-              Vamos organizar sua obra
+            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
+              Organize cada etapa da sua construção em um só lugar.
             </h1>
-            <p className="text-sm text-muted-foreground">
-              Em poucos passos você terá um painel visual para acompanhar orçamento,
-              etapas e decisões da sua construção ou reforma.
+            <p className="max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+              Minha Obra é um painel simples para você acompanhar gastos, etapas, decisões e documentos
+              da sua construção ou reforma, direto do celular.
+            </p>
+
+            <div className="flex flex-wrap gap-3 pt-1">
+              <Button size="lg" className="hover-scale" onClick={handlePrimaryCta}>
+                Começar agora
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="hover-scale"
+                type="button"
+                onClick={handleSecondaryCta}
+              >
+                Ver como funciona
+              </Button>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground pt-2">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-4 w-4 text-primary" />
+                <span>Sem compromisso, você pode testar à vontade.</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Shield className="h-4 w-4 text-primary" />
+                <span>Seus dados protegidos e salvos na nuvem.</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="relative flex items-center justify-center">
+            <div className="absolute inset-0 -z-10 bg-gradient-to-tr from-primary/10 via-accent/10 to-background opacity-80 blur-3xl" />
+            <div className="card-elevated w-full max-w-sm space-y-4 border border-border/70 bg-background/90 p-5 shadow-lg animate-scale-in">
+              <header className="space-y-1">
+                <p className="text-xs font-medium uppercase tracking-[0.18em] text-accent-foreground/80">
+                  Visão geral
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Um resumo da sua obra em tempo real: orçamento, etapas e próximos pagamentos.
+                </p>
+              </header>
+
+              <div className="grid gap-3 text-sm">
+                <div className="rounded-xl border border-border/70 bg-background/70 p-3 flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-muted-foreground">Orçamento utilizado</p>
+                    <p className="text-base font-semibold">R$ 85.400</p>
+                  </div>
+                  <LineChart className="h-8 w-8 text-primary" />
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-xs">
+                  <div className="rounded-lg bg-muted/70 p-2">
+                    <p className="text-muted-foreground">Etapas</p>
+                    <p className="text-sm font-semibold">10</p>
+                  </div>
+                  <div className="rounded-lg bg-muted/70 p-2">
+                    <p className="text-muted-foreground">Concluídas</p>
+                    <p className="text-sm font-semibold text-emerald-500">3</p>
+                  </div>
+                  <div className="rounded-lg bg-muted/70 p-2">
+                    <p className="text-muted-foreground">Pagamentos</p>
+                    <p className="text-sm font-semibold">12</p>
+                  </div>
+                </div>
+                <p className="text-[11px] leading-snug text-muted-foreground">
+                  Os dados acima são apenas um exemplo. Na prática, tudo é atualizado automaticamente a
+                  partir dos seus gastos e etapas.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Como funciona */}
+        <section id="como-funciona" className="mt-14 space-y-6 animate-fade-in">
+          <header className="space-y-2">
+            <h2 className="text-xl font-semibold tracking-tight">Como o Minha Obra ajuda você</h2>
+            <p className="max-w-2xl text-sm text-muted-foreground">
+              Em vez de espalhar informações em planilhas, grupos de mensagem e papéis, você centraliza
+              tudo em um painel visual pensado para quem não é da área técnica.
             </p>
           </header>
 
-          <form id="form-obra" onSubmit={handleSubmit} className="space-y-5 card-elevated p-5 animate-scale-in">
-            <div className="space-y-2">
-              <Label htmlFor="nome">Nome da obra</Label>
-              <Input id="nome" name="nome" required placeholder="Ex: Casa dos sonhos" />
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="card-elevated flex flex-col gap-2 p-4 animate-fade-in">
+              <p className="text-xs font-medium uppercase tracking-[0.18em] text-accent-foreground/80">
+                1. Crie sua obra
+              </p>
+              <p className="text-sm font-semibold">Defina nome, orçamento e tipo</p>
+              <p className="text-xs text-muted-foreground">
+                Em poucos minutos você cadastra sua obra e já começa com etapas padrão prontas para usar.
+              </p>
             </div>
-
-            <div className="space-y-2">
-              <Label>Tipo de obra</Label>
-              <RadioGroup name="tipo" defaultValue="construcao" className="grid grid-cols-2 gap-2">
-                <div className="flex items-center gap-2 rounded-xl border bg-background px-3 py-2.5">
-                  <RadioGroupItem value="construcao" id="construcao" />
-                  <Label htmlFor="construcao" className="cursor-pointer text-sm">
-                    Construção
-                  </Label>
-                </div>
-                <div className="flex items-center gap-2 rounded-xl border bg-background px-3 py-2.5">
-                  <RadioGroupItem value="reforma" id="reforma" />
-                  <Label htmlFor="reforma" className="cursor-pointer text-sm">
-                    Reforma
-                  </Label>
-                </div>
-              </RadioGroup>
+            <div className="card-elevated flex flex-col gap-2 p-4 animate-fade-in">
+              <p className="text-xs font-medium uppercase tracking-[0.18em] text-accent-foreground/80">
+                2. Registre gastos
+              </p>
+              <p className="text-sm font-semibold">Acompanhe o orçamento de verdade</p>
+              <p className="text-xs text-muted-foreground">
+                Lance materiais, mão de obra e pagamentos futuros e veja o impacto direto no orçamento.
+              </p>
             </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label htmlFor="area">Área aproximada (m²)</Label>
-                <Input id="area" name="area" type="number" min={0} step="0.01" placeholder="120" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="orcamento">Orçamento estimado (R$)</Label>
-                <Input id="orcamento" name="orcamento" type="number" min={0} step="0.01" placeholder="250000" />
-              </div>
+            <div className="card-elevated flex flex-col gap-2 p-4 animate-fade-in">
+              <p className="text-xs font-medium uppercase tracking-[0.18em] text-accent-foreground/80">
+                3. Decida com calma
+              </p>
+              <p className="text-sm font-semibold">Centralize decisões e arquivos</p>
+              <p className="text-xs text-muted-foreground">
+                Guarde orçamentos, fotos e decisões em um só lugar para não se perder no meio da obra.
+              </p>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="inicio">Data de início (opcional)</Label>
-              <Input id="inicio" name="inicio" type="date" />
-            </div>
-
-            <p className="pt-1 text-[11px] leading-snug text-muted-foreground">
-              Você poderá alterar esses dados depois nas configurações da obra.
-            </p>
-          </form>
-        </div>
-
-        <div className="mt-6 flex flex-col gap-3">
-          <Button type="submit" form="form-obra" className="w-full hover-scale" disabled={submitting}>
-            {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {submitting ? "Criando..." : "Criar minha obra"}
-          </Button>
-          <p className="text-center text-xs text-muted-foreground">
-            Não se preocupe, você não precisa preencher tudo agora.
-          </p>
-        </div>
+          </div>
+        </section>
       </main>
     </div>
   );
