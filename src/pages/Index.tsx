@@ -1,20 +1,88 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     document.title = "Minha Obra | Criar obra";
+    checkExistingObra();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const checkExistingObra = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    // Se já tem obra, redireciona para o dashboard
+    const { data: obras } = await supabase
+      .from("obras")
+      .select("id")
+      .eq("user_id", user.id)
+      .limit(1);
+
+    if (obras && obras.length > 0) {
+      navigate("/dashboard");
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    navigate("/dashboard");
+    setSubmitting(true);
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Autenticação necessária",
+          description: "Você precisa estar logado para criar uma obra.",
+          variant: "destructive",
+        });
+        // TODO: navegar para tela de login quando implementada
+        return;
+      }
+
+      const formData = new FormData(e.currentTarget);
+      const nome = formData.get("nome") as string;
+      const tipo = formData.get("tipo") as string;
+      const areaM2 = formData.get("area") as string;
+      const orcamentoEstimado = formData.get("orcamento") as string;
+      const dataInicio = formData.get("inicio") as string;
+
+      const { error } = await supabase.from("obras").insert({
+        user_id: user.id,
+        nome,
+        tipo,
+        area_m2: areaM2 ? parseFloat(areaM2) : null,
+        orcamento_estimado: orcamentoEstimado ? parseFloat(orcamentoEstimado) : null,
+        data_inicio: dataInicio || null,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Obra criada com sucesso!",
+        description: "Agora você pode começar a gerenciar sua obra.",
+      });
+
+      navigate("/dashboard");
+    } catch (error: any) {
+      toast({
+        title: "Erro ao criar obra",
+        description: error.message || "Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -34,15 +102,15 @@ const Index = () => {
             </p>
           </header>
 
-          <form onSubmit={handleSubmit} className="space-y-5 card-elevated p-5 animate-scale-in">
+          <form id="form-obra" onSubmit={handleSubmit} className="space-y-5 card-elevated p-5 animate-scale-in">
             <div className="space-y-2">
               <Label htmlFor="nome">Nome da obra</Label>
-              <Input id="nome" required placeholder="Ex: Casa dos sonhos" />
+              <Input id="nome" name="nome" required placeholder="Ex: Casa dos sonhos" />
             </div>
 
             <div className="space-y-2">
               <Label>Tipo de obra</Label>
-              <RadioGroup defaultValue="construcao" className="grid grid-cols-2 gap-2">
+              <RadioGroup name="tipo" defaultValue="construcao" className="grid grid-cols-2 gap-2">
                 <div className="flex items-center gap-2 rounded-xl border bg-background px-3 py-2.5">
                   <RadioGroupItem value="construcao" id="construcao" />
                   <Label htmlFor="construcao" className="cursor-pointer text-sm">
@@ -61,17 +129,17 @@ const Index = () => {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <Label htmlFor="area">Área aproximada (m²)</Label>
-                <Input id="area" type="number" min={0} placeholder="120" />
+                <Input id="area" name="area" type="number" min={0} step="0.01" placeholder="120" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="orcamento">Orçamento estimado (R$)</Label>
-                <Input id="orcamento" type="number" min={0} placeholder="250000" />
+                <Input id="orcamento" name="orcamento" type="number" min={0} step="0.01" placeholder="250000" />
               </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="inicio">Data de início (opcional)</Label>
-              <Input id="inicio" type="date" />
+              <Input id="inicio" name="inicio" type="date" />
             </div>
 
             <p className="pt-1 text-[11px] leading-snug text-muted-foreground">
@@ -81,8 +149,9 @@ const Index = () => {
         </div>
 
         <div className="mt-6 flex flex-col gap-3">
-          <Button type="submit" form="" className="w-full hover-scale">
-            Criar minha obra
+          <Button type="submit" form="form-obra" className="w-full hover-scale" disabled={submitting}>
+            {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {submitting ? "Criando..." : "Criar minha obra"}
           </Button>
           <p className="text-center text-xs text-muted-foreground">
             Não se preocupe, você não precisa preencher tudo agora.
