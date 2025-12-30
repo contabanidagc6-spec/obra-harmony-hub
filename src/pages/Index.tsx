@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2, LineChart, Shield } from "lucide-react";
+import landingHero from "@/assets/landing-hero.png";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -113,7 +114,7 @@ const Index = () => {
             <div className="absolute inset-0 -z-10 bg-gradient-to-tr from-primary/10 via-accent/10 to-background opacity-80 blur-3xl" />
             <div className="card-elevated w-full max-w-md overflow-hidden animate-scale-in hover-scale">
               <img
-                src={require("@/assets/landing-hero.png")}
+                src={landingHero}
                 alt="Casa em construção representando organização da obra"
                 className="h-full w-full object-cover"
                 loading="lazy"
