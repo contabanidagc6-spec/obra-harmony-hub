@@ -93,22 +93,22 @@ const Index = () => {
       <main id="topo" className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 pb-24 pt-16">
         {/* HERO */}
         <section className="animate-enter">
-          <div className="max-w-3xl space-y-7 text-center md:text-left">
-            <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-background/80 px-3 py-1 text-[11px] text-muted-foreground shadow-sm hover-scale">
+          <div className="max-w-3xl space-y-8 text-center md:text-left">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-background/80 px-3 py-1 text-[11px] font-medium text-muted-foreground shadow-sm hover-scale">
               <span className="h-1.5 w-1.5 rounded-full bg-primary pulse" aria-hidden="true" />
               <span>Entenda sua obra sem depender de planilhas ou termos técnicos</span>
             </div>
 
-            <div className="space-y-3">
-              <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl md:text-6xl">
+            <div className="space-y-4">
+              <h1>
                 Sua obra sob controle.
                 <br />
                 <span className="text-[hsl(var(--primary))]">Sem sustos nem estouro no orçamento.</span>
               </h1>
-              <p className="max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-                Veja em um painel simples quanto já foi gasto, o que ainda falta pagar e em que etapa a obra
-                está. Tudo organizado em um só lugar, para evitar atrasos, planejar os próximos pagamentos e
-                decidir com calma.
+              <p className="max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+                Veja em um painel simples quanto já foi gasto, o que ainda falta pagar e em que etapa a obra está.
+                Tudo organizado em um só lugar, para evitar atrasos, planejar os próximos pagamentos e decidir com
+                calma.
               </p>
             </div>
 
@@ -120,7 +120,7 @@ const Index = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="hover-scale"
+                className="hover-scale font-semibold"
                 type="button"
                 onClick={() => scrollToSection("como-funciona")}
               >
@@ -592,6 +592,49 @@ const Index = () => {
           </div>
         </section>
 
+
+        {/* FAQ */}
+        <section
+          aria-labelledby="faq-heading"
+          className="mt-20 space-y-8 border-t border-border/60 pt-12 animate-fade-in"
+        >
+          <header className="space-y-2 text-center">
+            <p className="text-xs font-medium uppercase tracking-[0.16em] text-primary">Dúvidas rápidas</p>
+            <h2 id="faq-heading">Perguntas frequentes sobre assinatura</h2>
+            <p className="mx-auto max-w-2xl text-sm text-muted-foreground">
+              Respostas diretas sobre pagamento, cancelamento e segurança para você decidir com tranquilidade.
+            </p>
+          </header>
+
+          <div className="mx-auto grid max-w-4xl gap-6 md:grid-cols-3">
+            <article className="card-elevated p-5 text-left">
+              <h3 className="text-base font-semibold">Como funciona o pagamento?</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Você escolhe um plano mensal e o valor é cobrado automaticamente todo mês. Nesta versão de
+                demonstração, o pagamento é apenas ilustrativo – você poderá ajustar os valores e a forma de
+                cobrança quando for lançar para o público.
+              </p>
+            </article>
+
+            <article className="card-elevated p-5 text-left">
+              <h3 className="text-base font-semibold">Posso cancelar quando quiser?</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Sim. A ideia é que você consiga cancelar direto pelo painel, sem telefonema, multa ou fidelidade.
+                Enquanto isso, você pode testar à vontade sabendo que pode parar a qualquer momento.
+              </p>
+            </article>
+
+            <article className="card-elevated p-5 text-left">
+              <h3 className="text-base font-semibold">Meus dados e da obra ficam seguros?</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Os dados são armazenados em ambiente seguro, com os mesmos padrões usados por grandes empresas de
+                tecnologia. Todas as informações de valor, etapas e documentos são protegidas e você controla quem
+                pode enxergar cada obra.
+              </p>
+            </article>
+          </div>
+        </section>
+
         {/* CONTATO / CTA FINAL */}
         <section
           id="contato"
@@ -599,8 +642,8 @@ const Index = () => {
         >
           <h2 className="text-3xl font-semibold sm:text-4xl">Comece sua obra organizada hoje</h2>
           <p className="mx-auto mt-4 max-w-2xl text-sm opacity-90">
-            Crie sua conta, cadastre sua obra e veja em minutos se os gastos estão dentro do combinado e se há
-            risco de atraso. Você controla o cancelamento a qualquer momento, sem burocracia.
+            Crie sua conta, cadastre sua obra e veja em minutos se os gastos estão dentro do combinado e se há risco
+            de atraso. Você controla o cancelamento a qualquer momento, sem burocracia.
           </p>
           <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <Button size="lg" variant="outline" className="hover-scale" onClick={goToAuth}>

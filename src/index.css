@@ -115,11 +115,20 @@ All colors MUST be HSL.
     @apply bg-background text-foreground antialiased font-sans;
   }
 
-  h1,
-  h2,
-  h3,
+  h1 {
+    @apply font-display font-semibold tracking-tight text-4xl sm:text-5xl md:text-6xl leading-tight;
+  }
+
+  h2 {
+    @apply font-display font-semibold tracking-tight text-2xl sm:text-3xl md:text-4xl leading-snug;
+  }
+
+  h3 {
+    @apply font-display font-semibold tracking-tight text-xl sm:text-2xl leading-snug;
+  }
+
   h4 {
-    @apply tracking-tight font-semibold font-display;
+    @apply font-display font-semibold tracking-tight text-lg sm:text-xl leading-snug;
   }
 
   .page-shell {
