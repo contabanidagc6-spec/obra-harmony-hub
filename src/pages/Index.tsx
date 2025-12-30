@@ -57,20 +57,52 @@ const Index = () => {
       const orcamentoEstimado = formData.get("orcamento") as string;
       const dataInicio = formData.get("inicio") as string;
 
-      const { error } = await supabase.from("obras").insert({
-        user_id: user.id,
-        nome,
-        tipo,
-        area_m2: areaM2 ? parseFloat(areaM2) : null,
-        orcamento_estimado: orcamentoEstimado ? parseFloat(orcamentoEstimado) : null,
-        data_inicio: dataInicio || null,
-      });
+      // Criar a obra
+      const { data: obra, error: obraError } = await supabase
+        .from("obras")
+        .insert({
+          user_id: user.id,
+          nome,
+          tipo,
+          area_m2: areaM2 ? parseFloat(areaM2) : null,
+          orcamento_estimado: orcamentoEstimado ? parseFloat(orcamentoEstimado) : null,
+          data_inicio: dataInicio || null,
+        })
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (obraError) throw obraError;
+
+      // Criar etapas padrão
+      const etapasPadrao = [
+        { nome: "Fundação", ordem: 1 },
+        { nome: "Estrutura", ordem: 2 },
+        { nome: "Alvenaria", ordem: 3 },
+        { nome: "Instalações Elétricas", ordem: 4 },
+        { nome: "Instalações Hidráulicas", ordem: 5 },
+        { nome: "Revestimentos", ordem: 6 },
+        { nome: "Acabamentos", ordem: 7 },
+        { nome: "Pintura", ordem: 8 },
+        { nome: "Pisos", ordem: 9 },
+        { nome: "Louças e Metais", ordem: 10 },
+      ];
+
+      const etapasParaInserir = etapasPadrao.map((etapa) => ({
+        obra_id: obra.id,
+        nome: etapa.nome,
+        status: "nao-iniciada",
+        orcamento_previsto: null,
+      }));
+
+      const { error: etapasError } = await supabase
+        .from("etapas")
+        .insert(etapasParaInserir);
+
+      if (etapasError) throw etapasError;
 
       toast({
         title: "Obra criada com sucesso!",
-        description: "Agora você pode começar a gerenciar sua obra.",
+        description: `${etapasPadrao.length} etapas foram adicionadas automaticamente.`,
       });
 
       navigate("/dashboard");
