@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle2, LineChart, Shield, Wallet, CalendarDays } from "lucide-react";
+import { ArrowRight, CheckCircle2, LineChart, Shield, Wallet, CalendarDays, Crown, Star } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, Tooltip, CartesianGrid, Cell } from "recharts";
 
 const etapaGastosData = [
@@ -477,6 +477,22 @@ const Index = () => {
             </p>
           </header>
 
+          {/* Selos de prova social e garantias */}
+          <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-3 text-[11px] sm:text-xs">
+            <div className="flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-3 py-1.5">
+              <Star className="h-3.5 w-3.5 text-primary" />
+              <span className="font-medium text-foreground">Plano Premium é o mais escolhido pelos clientes</span>
+            </div>
+            <div className="flex items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-1.5">
+              <Shield className="h-3.5 w-3.5 text-primary" />
+              <span className="text-muted-foreground">7 dias para testar com tranquilidade</span>
+            </div>
+            <div className="flex items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-1.5">
+              <CalendarDays className="h-3.5 w-3.5 text-primary" />
+              <span className="text-muted-foreground">Cancelamento simples direto pelo painel</span>
+            </div>
+          </div>
+
           <div className="grid gap-6 md:grid-cols-3">
             {/* Essencial */}
             <article className="card-elevated flex h-full flex-col justify-between p-6">
@@ -506,13 +522,17 @@ const Index = () => {
               </div>
             </article>
 
-            {/* Plus - mais escolhido */}
-            <article className="relative flex h-full flex-col justify-between rounded-3xl border border-[hsl(var(--primary))] bg-[hsl(var(--primary))/0.04] p-6 shadow-md shadow-[hsl(var(--primary))/0.25]">
+            {/* Premium - mais escolhido */}
+            <article className="relative flex h-full flex-col justify-between rounded-3xl border border-[hsl(var(--primary))] bg-[radial-gradient(circle_at_top,_hsl(var(--primary))/0.16,_transparent_55%)] p-6 shadow-md shadow-[0_0_35px_hsl(var(--primary)/0.45)] hover:-translate-y-1 hover:shadow-[0_0_45px_hsl(var(--primary)/0.6)] transition-all duration-300 pulse">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[hsl(var(--primary))] px-3 py-1 text-[11px] font-medium text-[hsl(var(--primary-foreground))] shadow-sm">
                 Mais escolhido
               </div>
-              <div className="space-y-3 pt-2">
-                <h3 className="text-lg font-semibold">Plus</h3>
+              <div className="space-y-3 pt-4">
+                <div className="inline-flex items-center gap-2 rounded-full bg-background/60 px-3 py-1 text-xs font-medium text-primary">
+                  <Crown className="h-3.5 w-3.5" />
+                  <span>Controle premium da sua obra</span>
+                </div>
+                <h3 className="text-lg font-semibold">Premium</h3>
                 <p className="text-sm text-muted-foreground">
                   Para quem quer acompanhar de perto orçamento, etapas e decisões com mais detalhes.
                 </p>
@@ -530,7 +550,7 @@ const Index = () => {
               </div>
               <div className="mt-6">
                 <Button className="w-full hover-scale" size="lg" onClick={goToAuth}>
-                  Escolher plano Plus
+                  Escolher plano Premium
                 </Button>
                 <p className="mt-2 text-center text-[11px] text-muted-foreground">
                   Ideal para a maioria das obras residenciais e reformas.
@@ -538,10 +558,10 @@ const Index = () => {
               </div>
             </article>
 
-            {/* Pro Premium */}
+            {/* Executive */}
             <article className="card-elevated flex h-full flex-col justify-between p-6">
               <div className="space-y-3">
-                <h3 className="text-lg font-semibold">Pro Premium</h3>
+                <h3 className="text-lg font-semibold">Executive</h3>
                 <p className="text-sm text-muted-foreground">
                   Para quem acompanha mais de uma obra ao mesmo tempo ou quer histórico completo.
                 </p>
@@ -558,7 +578,7 @@ const Index = () => {
               </div>
               <div className="mt-6">
                 <Button className="w-full hover-scale" size="lg" onClick={goToAuth}>
-                  Ficar com Pro Premium
+                  Ficar com Executive
                 </Button>
                 <p className="mt-2 text-center text-[11px] text-muted-foreground">
                   Pensado para quem gerencia várias obras ou presta consultoria.
