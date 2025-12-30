@@ -2,14 +2,14 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2, LineChart, Shield, Wallet, CalendarDays } from "lucide-react";
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
+import { ResponsiveContainer, BarChart, Bar, XAxis, Tooltip, CartesianGrid, Cell } from "recharts";
 
 const etapaGastosData = [
-  { name: "Fundação", gasto: 45000 },
-  { name: "Estrutura", gasto: 38000 },
-  { name: "Alvenaria", gasto: 29000 },
-  { name: "Acabamento", gasto: 22000 },
-  { name: "Finalização", gasto: 9000 },
+  { name: "Fundação", gasto: 60000 },
+  { name: "Estrutura", gasto: 100000 },
+  { name: "Alvenaria", gasto: 60000 },
+  { name: "Acabamento", gasto: 180000 },
+  { name: "Finalização", gasto: 30000 },
 ];
 
 const Index = () => {
@@ -293,7 +293,7 @@ const Index = () => {
               <div className="relative flex h-32 w-32 items-center justify-center rounded-full bg-background">
                 <div className="text-center text-xs">
                   <p className="text-[11px] text-muted-foreground">Orçamento total</p>
-                  <p className="text-sm font-semibold">R$ 180.000,00</p>
+                  <p className="text-sm font-semibold">R$ 430.000,00</p>
                   <p className="mt-1 text-[11px] text-primary">62% já executado</p>
                 </div>
               </div>
@@ -331,11 +331,6 @@ const Index = () => {
                       axisLine={false}
                       tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
                     />
-                    <YAxis
-                      tickLine={false}
-                      axisLine={false}
-                      tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
-                    />
                     <Tooltip
                       cursor={{ fill: "hsl(var(--muted))/0.4" }}
                       contentStyle={{
@@ -352,9 +347,26 @@ const Index = () => {
                     <Bar
                       dataKey="gasto"
                       radius={[8, 8, 0, 0]}
-                      fill="hsl(var(--primary))"
-                      stroke="hsl(var(--primary))"
-                    />
+                      isAnimationActive
+                      animationDuration={600}
+                    >
+                      {etapaGastosData.map((entry) => (
+                        <Cell
+                          key={entry.name}
+                          fill={
+                            entry.name === "Acabamento" || entry.name === "Alvenaria"
+                              ? "hsl(var(--primary) / 0.5)"
+                              : "hsl(var(--primary))"
+                          }
+                          stroke={
+                            entry.name === "Acabamento" || entry.name === "Alvenaria"
+                              ? "hsl(var(--primary) / 0.6)"
+                              : "hsl(var(--primary))"
+                          }
+                          className="transition-all duration-200 hover:brightness-110"
+                        />
+                      ))}
+                    </Bar>
                   </BarChart>
                 </ResponsiveContainer>
               </div>
