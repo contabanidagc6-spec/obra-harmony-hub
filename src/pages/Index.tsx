@@ -523,24 +523,24 @@ const Index = () => {
             </article>
 
             {/* Premium - mais escolhido */}
-            <article className="relative flex h-full flex-col justify-between rounded-3xl border border-[hsl(var(--primary))] bg-[radial-gradient(circle_at_top,_hsl(var(--primary))/0.16,_transparent_55%)] p-6 shadow-md shadow-[0_0_35px_hsl(var(--primary)/0.45)] hover:-translate-y-1 hover:shadow-[0_0_45px_hsl(var(--primary)/0.6)] transition-all duration-300 pulse">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[hsl(var(--primary))] px-3 py-1 text-[11px] font-medium text-[hsl(var(--primary-foreground))] shadow-sm">
+            <article className="relative flex h-full flex-col justify-between rounded-3xl border border-primary/80 bg-[hsl(var(--primary))] p-6 shadow-md shadow-[0_0_40px_hsl(var(--primary)/0.7)] hover:-translate-y-1 hover:shadow-[0_0_52px_hsl(var(--primary)/0.9)] transition-all duration-300">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[hsl(var(--primary-foreground))] px-3 py-1 text-[11px] font-semibold text-[hsl(var(--primary))] shadow-sm">
                 Mais escolhido
               </div>
-              <div className="space-y-3 pt-4">
-                <div className="inline-flex items-center gap-2 rounded-full bg-background/60 px-3 py-1 text-xs font-medium text-primary">
+              <div className="space-y-3 pt-4 text-[hsl(var(--primary-foreground))]">
+                <div className="inline-flex items-center gap-2 rounded-full bg-[hsl(var(--primary-foreground))/0.1] px-3 py-1 text-xs font-medium text-[hsl(var(--primary-foreground))] animate-pulse">
                   <Crown className="h-3.5 w-3.5" />
                   <span>Controle premium da sua obra</span>
                 </div>
                 <h3 className="text-lg font-semibold">Premium</h3>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-[hsl(var(--primary-foreground))/0.88]">
                   Para quem quer acompanhar de perto orçamento, etapas e decisões com mais detalhes.
                 </p>
                 <p className="text-2xl font-semibold">
                   R$ 49,90
-                  <span className="text-xs font-normal text-muted-foreground"> / mês</span>
+                  <span className="text-xs font-normal text-[hsl(var(--primary-foreground))/0.82]"> / mês</span>
                 </p>
-                <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                <ul className="mt-3 space-y-2 text-sm text-[hsl(var(--primary-foreground))/0.86]">
                   <li>• Tudo do Essencial</li>
                   <li>• Controle de decisões com impacto financeiro</li>
                   <li>• Linha do tempo de pagamentos futuros (7 e 30 dias)</li>
@@ -549,10 +549,14 @@ const Index = () => {
                 </ul>
               </div>
               <div className="mt-6">
-                <Button className="w-full hover-scale" size="lg" onClick={goToAuth}>
+                <Button
+                  className="w-full hover-scale bg-[hsl(var(--primary-foreground))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary-foreground))/0.9]"
+                  size="lg"
+                  onClick={goToAuth}
+               >
                   Escolher plano Premium
                 </Button>
-                <p className="mt-2 text-center text-[11px] text-muted-foreground">
+                <p className="mt-2 text-center text-[11px] text-[hsl(var(--primary-foreground))/0.8]">
                   Ideal para a maioria das obras residenciais e reformas.
                 </p>
               </div>
