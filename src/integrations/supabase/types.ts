@@ -190,6 +190,38 @@ export type Database = {
         }
         Relationships: []
       }
+      share_links: {
+        Row: {
+          created_at: string
+          id: string
+          obra_id: string
+          revoked: boolean
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          obra_id: string
+          revoked?: boolean
+          token: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          obra_id?: string
+          revoked?: boolean
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "share_links_obra_id_fkey"
+            columns: ["obra_id"]
+            isOneToOne: false
+            referencedRelation: "obras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

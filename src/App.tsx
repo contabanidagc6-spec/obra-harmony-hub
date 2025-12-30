@@ -17,6 +17,7 @@ import { RelatorioPage } from "./pages/RelatorioPage";
 import { ConfiguracoesPage } from "./pages/ConfiguracoesPage";
 import { NovoGastoPage } from "./pages/NovoGastoPage";
 import OnboardingPage from "./pages/OnboardingPage";
+import { SharedViewPage } from "./pages/SharedViewPage";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +54,7 @@ const App = () => {
               <Route path="/gastos" element={<NotFound />} />
               <Route path="/gastos/novo" element={<NovoGastoPage />} />
             </Route>
+            <Route path="/compartilhar/:token" element={<SharedViewPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
