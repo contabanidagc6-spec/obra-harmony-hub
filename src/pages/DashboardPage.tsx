@@ -3,7 +3,7 @@ import { TrendingUp, AlertTriangle, CalendarDays, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { useToast } from "@/components/ui/use-toast";
@@ -17,6 +17,12 @@ type DashboardAlert = {
   tone: "warning" | "critical";
 };
 
+type EtapaComparativoDatum = {
+  nome: string;
+  gastoReal: number;
+  gastoPrevisto: number;
+};
+
 export const DashboardPage = () => {
   const { toast } = useToast();
   const [obra, setObra] = useState<Obra | null>(null);
@@ -25,6 +31,7 @@ export const DashboardPage = () => {
   const [progressoObra, setProgressoObra] = useState(0);
   const [alerts, setAlerts] = useState<DashboardAlert[]>([]);
   const [loading, setLoading] = useState(true);
+  const [etapasComparativo, setEtapasComparativo] = useState<EtapaComparativoDatum[]>([]);
 
   useEffect(() => {
     document.title = "Minha Obra | Dashboard";
@@ -70,6 +77,7 @@ export const DashboardPage = () => {
         const etapaIds = etapas.map((e) => e.id);
 
         let totalGastoObra = 0;
+        const gastosPorEtapa: Record<string, number> = {};
 
         if (etapaIds.length > 0) {
           const { data: gastosData, error: gastosError } = await supabase
@@ -79,13 +87,27 @@ export const DashboardPage = () => {
 
           if (gastosError) throw gastosError;
 
-          totalGastoObra = (gastosData || []).reduce(
-            (sum, gasto: any) => sum + Number(gasto.valor ?? 0),
-            0,
-          );
+          (gastosData || []).forEach((gasto: any) => {
+            const valor = Number(gasto.valor ?? 0);
+            totalGastoObra += valor;
+            const etapaId = gasto.etapa_id as string;
+            gastosPorEtapa[etapaId] = (gastosPorEtapa[etapaId] || 0) + valor;
+          });
         }
 
         setTotalGasto(totalGastoObra);
+
+        const etapasComparativoData: EtapaComparativoDatum[] = etapas.map((etapa) => {
+          const gastoReal = gastosPorEtapa[etapa.id] || 0;
+          const gastoPrevisto = etapa.orcamento_previsto ? Number(etapa.orcamento_previsto) : 0;
+          return {
+            nome: etapa.nome,
+            gastoReal,
+            gastoPrevisto,
+          };
+        });
+
+        setEtapasComparativo(etapasComparativoData);
 
         const totalEtapas = etapas.length;
         const concluidas = etapas.filter((e) => e.status === "concluida").length;
@@ -283,20 +305,35 @@ export const DashboardPage = () => {
       </section>
 
       <section className="grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] animate-fade-in">
-        <Card className="card-elevated">
+        <Card className="card-elevated hover-scale">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Orçamento usado x restante</CardTitle>
           </CardHeader>
           <CardContent className="h-48">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={budgetData} stackOffset="none" barSize={32}>
+              <BarChart
+                data={budgetData}
+                barSize={32}
+                className="animate-scale-in"
+              >
                 <XAxis dataKey="name" hide />
                 <YAxis hide domain={[0, 100]} />
                 <Tooltip
-                  cursor={{ fill: "transparent" }}
+                  cursor={{ fill: "hsl(var(--muted))/0.4" }}
                   formatter={(value: number, name: string) => [`${value}%`, name]}
+                  contentStyle={{
+                    backgroundColor: "hsl(var(--background))",
+                    borderRadius: 12,
+                    border: "1px solid hsl(var(--border))",
+                    fontSize: 12,
+                  }}
                 />
-                <Bar dataKey="value" radius={[16, 16, 16, 16]}>
+                <Bar
+                  dataKey="value"
+                  radius={[16, 16, 16, 16]}
+                  isAnimationActive
+                  animationDuration={600}
+                >
                   {budgetData.map((entry, index) => (
                     <Cell
                       // eslint-disable-next-line react/no-array-index-key
@@ -306,6 +343,7 @@ export const DashboardPage = () => {
                           ? "hsl(var(--accent))"
                           : "hsl(var(--primary))"
                       }
+                      className="transition-all duration-200 hover:brightness-110"
                     />
                   ))}
                 </Bar>
@@ -341,7 +379,7 @@ export const DashboardPage = () => {
               <div
                 // eslint-disable-next-line react/no-array-index-key
                 key={index}
-                className="flex items-start gap-2 rounded-xl bg-muted/60 px-3 py-2.5 text-xs"
+                className="flex items-start gap-2 rounded-xl bg-muted/60 px-3 py-2.5 text-xs animate-fade-in"
               >
                 <AlertTriangle
                   className="mt-0.5 h-3.5 w-3.5"
@@ -361,6 +399,86 @@ export const DashboardPage = () => {
             ))}
           </CardContent>
         </Card>
+      </section>
+
+      <section className="grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] animate-fade-in">
+        <Card className="card-elevated hover-scale">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">
+              Gastos reais x previstos por etapa
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="h-60">
+            {etapasComparativo.length === 0 ? (
+              <p className="text-xs text-muted-foreground">
+                Cadastre etapas com orçamento previsto e registre gastos para acompanhar a comparação por fase
+                da obra.
+              </p>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={etapasComparativo}
+                  barGap={6}
+                  className="animate-scale-in"
+                >
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    vertical={false}
+                    stroke="hsl(var(--muted))"
+                  />
+                  <XAxis
+                    dataKey="nome"
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                  />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }}
+                  />
+                  <Tooltip
+                    cursor={{ fill: "hsl(var(--muted))/0.3" }}
+                    contentStyle={{
+                      backgroundColor: "hsl(var(--background))",
+                      borderRadius: 12,
+                      border: "1px solid hsl(var(--border))",
+                      fontSize: 12,
+                    }}
+                    formatter={(value: number, name: string) => [
+                      value.toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }),
+                      name === "gastoReal" ? "Gasto real" : "Gasto previsto",
+                    ]}
+                  />
+                  <Bar
+                    dataKey="gastoPrevisto"
+                    stackId="gastos"
+                    radius={[8, 8, 0, 0]}
+                    fill="hsl(var(--primary))/0.4"
+                    stroke="hsl(var(--primary))"
+                    isAnimationActive
+                    animationDuration={600}
+                  />
+                  <Bar
+                    dataKey="gastoReal"
+                    stackId="gastos"
+                    radius={[8, 8, 0, 0]}
+                    fill="hsl(var(--primary))"
+                    stroke="hsl(var(--primary))"
+                    isAnimationActive
+                    animationDuration={700}
+                    className="transition-all duration-200 hover:brightness-110"
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </CardContent>
+        </Card>
+
+        <div className="hidden md:block" />
       </section>
     </div>
   );
