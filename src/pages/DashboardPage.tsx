@@ -185,13 +185,13 @@ export const DashboardPage = () => {
 
   return (
     <div className="space-y-6 md:space-y-8">
-      <section className="flex items-start justify-between gap-3">
+      <section className="flex items-start justify-between gap-3 animate-fade-in">
         <div>
           <h1 className="text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
-            Visão geral da obra
+            Resumo da sua obra
           </h1>
           <p className="text-sm text-muted-foreground">
-            Acompanhe o orçamento, o prazo e os principais alertas em tempo real.
+            Veja em segundos se os gastos e o andamento estão dentro do combinado.
           </p>
         </div>
         <Button size="sm" variant="outline" className="hidden sm:inline-flex">
@@ -212,7 +212,7 @@ export const DashboardPage = () => {
         </p>
       )}
 
-      <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <section className="grid grid-cols-1 gap-3 sm:grid-cols-3 animate-fade-in">
         <Card className="card-elevated hover-scale">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
@@ -281,7 +281,7 @@ export const DashboardPage = () => {
         </Card>
       </section>
 
-      <section className="grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+      <section className="grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] animate-fade-in">
         <Card className="card-elevated">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Orçamento usado x restante</CardTitle>
