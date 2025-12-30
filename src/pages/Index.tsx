@@ -256,6 +256,30 @@ const Index = () => {
                   3
                 </span>
                 <div>
+                  <p className="font-medium text-foreground">Faça upload dos comprovantes</p>
+                  <p>
+                    Guarde notas fiscais, contratos e fotos da obra em um só lugar, ligados a cada etapa, para ter
+                    tudo organizado quando precisar conferir.
+                  </p>
+                </div>
+              </li>
+              <li className="flex gap-3">
+                <span className="mt-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary">
+                  4
+                </span>
+                <div>
+                  <p className="font-medium text-foreground">Compartilhe o acesso com segurança</p>
+                  <p>
+                    Gere um link de acesso para arquiteto, engenheiro ou cônjuge acompanharem os números com você,
+                    sem precisar passar planilhas por e-mail.
+                  </p>
+                </div>
+              </li>
+              <li className="flex gap-3">
+                <span className="mt-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-[11px] font-semibold text-primary">
+                  5
+                </span>
+                <div>
                   <p className="font-medium text-foreground">Acompanhe os gráficos</p>
                   <p>
                     Veja se está dentro do orçamento e do prazo com cores e indicadores fáceis de entender, mesmo
@@ -269,7 +293,7 @@ const Index = () => {
               <p>
                 Tudo foi pensado para reduzir a ansiedade com dinheiro de obra: valores sempre atualizados, alertas
                 simples quando algo foge do previsto e uma linguagem direta para você saber, em minutos, se está
-                tudo bem ou se precisa agir.
+                tudo bem ou se precisa agir – sozinho ou junto com quem te ajuda na obra.
               </p>
             </div>
           </div>
