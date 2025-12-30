@@ -18,6 +18,7 @@ import { ConfiguracoesPage } from "./pages/ConfiguracoesPage";
 import { NovoGastoPage } from "./pages/NovoGastoPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import { SharedViewPage } from "./pages/SharedViewPage";
+import AuthPage from "./pages/AuthPage";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const App = () => {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<AuthPage />} />
             <Route path="/onboarding" element={<OnboardingPage />} />
             <Route element={<AppLayout />}>
               <Route path="/dashboard" element={<DashboardPage />} />
