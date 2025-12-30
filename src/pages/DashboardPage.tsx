@@ -184,10 +184,12 @@ export const DashboardPage = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6 md:space-y-8">
       <section className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold leading-tight">Visão geral da obra</h1>
+          <h1 className="text-2xl font-semibold leading-tight tracking-tight md:text-3xl">
+            Visão geral da obra
+          </h1>
           <p className="text-sm text-muted-foreground">
             Acompanhe o orçamento, o prazo e os principais alertas em tempo real.
           </p>
