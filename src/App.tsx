@@ -19,6 +19,7 @@ import { NovoGastoPage } from "./pages/NovoGastoPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import { SharedViewPage } from "./pages/SharedViewPage";
 import AuthPage from "./pages/AuthPage";
+import { ProtectedRoute } from "./layouts/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -43,8 +44,21 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<AuthPage />} />
-            <Route path="/onboarding" element={<OnboardingPage />} />
-            <Route element={<AppLayout />}>
+            <Route
+              path="/onboarding"
+              element={
+                <ProtectedRoute>
+                  <OnboardingPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              element={
+                <ProtectedRoute>
+                  <AppLayout />
+                </ProtectedRoute>
+              }
+            >
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/etapas" element={<EtapasPage />} />
               <Route path="/etapas/:id" element={<EtapaDetalhePage />} />
