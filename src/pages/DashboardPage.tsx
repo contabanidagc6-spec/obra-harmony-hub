@@ -1,32 +1,187 @@
-import { useEffect } from "react";
-import { TrendingUp, AlertTriangle, CalendarDays } from "lucide-react";
+import { useEffect, useState } from "react";
+import { TrendingUp, AlertTriangle, CalendarDays, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { supabase } from "@/integrations/supabase/client";
+import type { Tables } from "@/integrations/supabase/types";
+import { useToast } from "@/components/ui/use-toast";
 
-const budgetData = [
-  { name: "Usado", value: 60 },
-  { name: "Restante", value: 40 },
-];
+type Obra = Tables<"obras">;
+type Etapa = Tables<"etapas">;
 
-const alerts = [
-  {
-    type: "financeiro",
-    label: "Gasto acima do previsto em Fundação",
-    tone: "warning" as const,
-  },
-  {
-    type: "prazo",
-    label: "Revestimentos com risco de atraso",
-    tone: "critical" as const,
-  },
-];
+type DashboardAlert = {
+  type: "financeiro" | "prazo";
+  label: string;
+  tone: "warning" | "critical";
+};
 
 export const DashboardPage = () => {
+  const { toast } = useToast();
+  const [obra, setObra] = useState<Obra | null>(null);
+  const [totalGasto, setTotalGasto] = useState(0);
+  const [diasCorridos, setDiasCorridos] = useState<number | null>(null);
+  const [progressoObra, setProgressoObra] = useState(0);
+  const [alerts, setAlerts] = useState<DashboardAlert[]>([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     document.title = "Minha Obra | Dashboard";
-  }, []);
+
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+          setLoading(false);
+          return;
+        }
+
+        const { data: obras, error: obrasError } = await supabase
+          .from("obras")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: true })
+          .limit(1);
+
+        if (obrasError) throw obrasError;
+
+        const currentObra = obras && obras.length > 0 ? (obras[0] as Obra) : null;
+        setObra(currentObra);
+
+        if (!currentObra) {
+          setLoading(false);
+          return;
+        }
+
+        const { data: etapasData, error: etapasError } = await supabase
+          .from("etapas")
+          .select("*")
+          .eq("obra_id", currentObra.id);
+
+        if (etapasError) throw etapasError;
+
+        const etapas = (etapasData as Etapa[]) || [];
+        const etapaIds = etapas.map((e) => e.id);
+
+        let totalGastoObra = 0;
+
+        if (etapaIds.length > 0) {
+          const { data: gastosData, error: gastosError } = await supabase
+            .from("gastos")
+            .select("valor, etapa_id")
+            .in("etapa_id", etapaIds as string[]);
+
+          if (gastosError) throw gastosError;
+
+          totalGastoObra = (gastosData || []).reduce(
+            (sum, gasto: any) => sum + Number(gasto.valor ?? 0),
+            0,
+          );
+        }
+
+        setTotalGasto(totalGastoObra);
+
+        const totalEtapas = etapas.length;
+        const concluidas = etapas.filter((e) => e.status === "concluida").length;
+        const progressoPercent = totalEtapas > 0 ? Math.round((concluidas / totalEtapas) * 100) : 0;
+        setProgressoObra(progressoPercent);
+
+        let diffDays: number | null = null;
+
+        if (currentObra.data_inicio) {
+          const inicio = new Date(currentObra.data_inicio as string);
+          const hoje = new Date();
+          const diffMs = hoje.getTime() - inicio.getTime();
+          diffDays = diffMs > 0 ? Math.floor(diffMs / (1000 * 60 * 60 * 24)) : 0;
+          setDiasCorridos(diffDays);
+        } else {
+          setDiasCorridos(null);
+        }
+
+        const newAlerts: DashboardAlert[] = [];
+
+        if (currentObra.orcamento_estimado) {
+          const orcamento = Number(currentObra.orcamento_estimado);
+          if (orcamento > 0) {
+            const desvioPercent = (totalGastoObra / orcamento) * 100;
+            if (desvioPercent >= 110) {
+              newAlerts.push({
+                type: "financeiro",
+                label: "Gastos acima do orçamento previsto da obra",
+                tone: "critical",
+              });
+            } else if (desvioPercent >= 90) {
+              newAlerts.push({
+                type: "financeiro",
+                label: "Obra próxima de atingir o orçamento previsto",
+                tone: "warning",
+              });
+            }
+          }
+        }
+
+        if (diffDays !== null && totalEtapas > 0) {
+          if (diffDays > 60 && progressoPercent < 30) {
+            newAlerts.push({
+              type: "prazo",
+              label: "Progresso físico abaixo do esperado para o tempo de obra",
+              tone: "critical",
+            });
+          } else if (diffDays > 30 && progressoPercent < 20) {
+            newAlerts.push({
+              type: "prazo",
+              label: "Acompanhe o cronograma para evitar atrasos na obra",
+              tone: "warning",
+            });
+          }
+        }
+
+        setAlerts(newAlerts);
+      } catch (error) {
+        console.error("Erro ao carregar dados do dashboard:", error);
+        toast({
+          title: "Não foi possível carregar o dashboard",
+          description: "Tente novamente em alguns instantes.",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, [toast]);
+
+  const orcamentoPrevisto = obra?.orcamento_estimado
+    ? Number(obra.orcamento_estimado)
+    : null;
+
+  const usedPercent = orcamentoPrevisto
+    ? Math.min(100, (totalGasto / orcamentoPrevisto) * 100)
+    : 0;
+
+  const roundedUsedPercent = Math.round(usedPercent);
+
+  const budgetData = [
+    { name: "Usado", value: roundedUsedPercent },
+    { name: "Restante", value: Math.max(0, 100 - roundedUsedPercent) },
+  ];
+
+  const formatCurrency = (value: number | null) => {
+    if (value === null) return "—";
+    return value.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  };
 
   return (
     <div className="space-y-4">
@@ -42,6 +197,19 @@ export const DashboardPage = () => {
         </Button>
       </section>
 
+      {loading && (
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Carregando dados da sua obra...
+        </div>
+      )}
+
+      {!loading && !obra && (
+        <p className="text-xs text-muted-foreground">
+          Nenhuma obra encontrada. Crie uma obra para visualizar o dashboard.
+        </p>
+      )}
+
       <section className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <Card className="card-elevated hover-scale">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -54,14 +222,21 @@ export const DashboardPage = () => {
             <div className="flex items-baseline justify-between text-sm">
               <div>
                 <p className="text-xs text-muted-foreground">Total previsto</p>
-                <p className="text-base font-semibold">R$ 250.000</p>
+                <p className="text-base font-semibold">
+                  {orcamentoPrevisto !== null
+                    ? formatCurrency(orcamentoPrevisto)
+                    : "Defina nas configurações"}
+                </p>
               </div>
               <div className="text-right text-xs">
                 <p className="text-muted-foreground">Gasto até agora</p>
-                <p className="font-medium">R$ 150.000 (60%)</p>
+                <p className="font-medium">
+                  {formatCurrency(totalGasto)}
+                  {orcamentoPrevisto !== null && ` (${roundedUsedPercent}%)`}
+                </p>
               </div>
             </div>
-            <Progress value={60} className="h-1.5" />
+            <Progress value={roundedUsedPercent} className="h-1.5" />
           </CardContent>
         </Card>
 
@@ -90,14 +265,16 @@ export const DashboardPage = () => {
             <div className="flex items-baseline justify-between">
               <div>
                 <p className="text-xs text-muted-foreground">Dias corridos</p>
-                <p className="text-base font-semibold">86 dias</p>
+                <p className="text-base font-semibold">
+                  {diasCorridos !== null ? `${diasCorridos} dias` : "Defina a data de início"}
+                </p>
               </div>
               <div className="text-right">
                 <p className="text-xs text-muted-foreground">Concluído</p>
-                <p className="text-base font-semibold">45%</p>
+                <p className="text-base font-semibold">{progressoObra}%</p>
               </div>
             </div>
-            <Progress value={45} className="h-1.5" />
+            <Progress value={progressoObra} className="h-1.5" />
           </CardContent>
         </Card>
       </section>
@@ -137,9 +314,25 @@ export const DashboardPage = () => {
         <Card className="card-elevated">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">Alertas</CardTitle>
-            <div className="status-pill-critical text-xs">2 pendentes</div>
+            <div
+              className={
+                alerts.length > 0
+                  ? "status-pill-critical text-xs"
+                  : "status-pill-good text-xs"
+              }
+            >
+              {alerts.length > 0
+                ? `${alerts.length} pendente${alerts.length > 1 ? "s" : ""}`
+                : "Sem alertas"}
+            </div>
           </CardHeader>
           <CardContent className="space-y-2">
+            {alerts.length === 0 && (
+              <p className="text-xs text-muted-foreground">
+                Nenhum alerta no momento. Continue acompanhando sua obra por aqui.
+              </p>
+            )}
+
             {alerts.map((alert, index) => (
               <div
                 // eslint-disable-next-line react/no-array-index-key
