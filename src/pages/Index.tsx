@@ -80,7 +80,7 @@ const Index = () => {
           <div className="space-y-7 text-center md:text-left max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-background/80 px-3 py-1 text-[11px] text-muted-foreground shadow-sm hover-scale">
               <span className="h-1.5 w-1.5 rounded-full bg-primary pulse" />
-              <span>Acompanhe cada gasto da obra em tempo real</span>
+              <span>Entenda sua obra mesmo sem ser da área</span>
             </div>
 
             <div className="space-y-3">
@@ -89,10 +89,10 @@ const Index = () => {
                 <br />
                 <span className="text-[hsl(var(--primary))]">Sem surpresas no orçamento.</span>
               </h1>
-              <p className="max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-                Organize custos, etapas e pagamentos da construção em um só lugar. Visual simples, feito
-                para quem não gosta de planilhas complicadas.
-              </p>
+            <p className="max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+              Veja em um painel simples quanto já foi gasto, o que ainda falta pagar e em que etapa a obra
+              está. Sem planilhas e sem termos complicados.
+            </p>
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-3 pt-1 md:justify-start">
@@ -165,8 +165,8 @@ const Index = () => {
               Pensado para quem está construindo pela primeira vez
             </h2>
             <p className="mx-auto max-w-2xl text-sm text-muted-foreground">
-              Visual limpo, termos simples e fluxo rápido. Tudo para você entender a situação da obra em
-              poucos cliques.
+              Você não precisa entender de engenharia para saber se a obra está indo bem. Explicamos tudo
+              com frases curtas e indicadores claros.
             </p>
           </header>
 
@@ -225,7 +225,7 @@ const Index = () => {
                 </span>
                 <div>
                   <p className="font-medium text-foreground">Cadastre sua obra</p>
-                  <p>Informe orçamento previsto, tipo de obra e data de início em menos de 2 minutos.</p>
+                  <p>Informe orçamento previsto, tipo de obra e data de início em poucos toques.</p>
                 </div>
               </li>
               <li className="flex gap-3">
@@ -234,7 +234,7 @@ const Index = () => {
                 </span>
                 <div>
                   <p className="font-medium text-foreground">Registre gastos e pagamentos</p>
-                  <p>Adicione mão de obra, materiais e serviços conforme eles acontecem.</p>
+                  <p>Adicione mão de obra, materiais e serviços conforme acontecerem, sem precisar de planilha.</p>
                 </div>
               </li>
               <li className="flex gap-3">
@@ -243,7 +243,7 @@ const Index = () => {
                 </span>
                 <div>
                   <p className="font-medium text-foreground">Acompanhe os gráficos</p>
-                  <p>Veja o que já foi executado, o que ainda está aberto e onde estão os maiores custos.</p>
+                  <p>Veja se está dentro do orçamento e do prazo com cores e indicadores fáceis de entender.</p>
                 </div>
               </li>
             </ol>
