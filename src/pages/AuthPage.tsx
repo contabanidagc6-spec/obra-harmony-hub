@@ -1,41 +1,269 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
+
+const baseAuthSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .email({ message: "Digite um e-mail válido" })
+    .max(255, { message: "O e-mail deve ter no máximo 255 caracteres" }),
+  password: z
+    .string()
+    .min(8, { message: "A senha deve ter pelo menos 8 caracteres" })
+    .max(72, { message: "A senha deve ter no máximo 72 caracteres" }),
+});
+
+const signUpSchema = baseAuthSchema
+  .extend({
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "As senhas precisam ser iguais",
+  });
+
+type AuthMode = "login" | "signup";
+
+type LoginFormValues = z.infer<typeof baseAuthSchema>;
+type SignUpFormValues = z.infer<typeof signUpSchema>;
 
 const AuthPage = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [mode, setMode] = useState<AuthMode>("login");
+  const [submitting, setSubmitting] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<LoginFormValues | SignUpFormValues>({
+    resolver: zodResolver(mode === "login" ? baseAuthSchema : signUpSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  useEffect(() => {
+    document.title = "Minha Obra | Entrar";
+  }, []);
+
+  const handlePostAuthNavigation = async () => {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        toast({
+          title: "Sessão não encontrada",
+          description: "Tente entrar novamente.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data: obras } = await supabase
+        .from("obras")
+        .select("id")
+        .order("created_at", { ascending: true })
+        .limit(1);
+
+      if (!obras || obras.length === 0) {
+        navigate("/onboarding");
+        return;
+      }
+
+      const { data: gastos } = await supabase.from("gastos").select("id").limit(1);
+
+      if (!gastos || gastos.length === 0) {
+        navigate("/gastos/novo");
+        return;
+      }
+
+      navigate("/dashboard");
+    } catch (error: any) {
+      toast({
+        title: "Erro ao redirecionar",
+        description: error?.message || "Tente novamente em instantes.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const onSubmit = async (values: LoginFormValues | SignUpFormValues) => {
+    setSubmitting(true);
+
+    try {
+      if (mode === "login") {
+        const { error } = await supabase.auth.signInWithPassword({
+          email: values.email,
+          password: values.password,
+        });
+
+        if (error) {
+          toast({
+            title: "Não foi possível entrar",
+            description: error.message || "Verifique seus dados e tente novamente.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        toast({
+          title: "Bem-vindo de volta",
+          description: "Vamos retomar o controle da sua obra.",
+        });
+
+        await handlePostAuthNavigation();
+        return;
+      }
+
+      const redirectUrl = `${window.location.origin}/`;
+
+      const { error } = await supabase.auth.signUp({
+        email: values.email,
+        password: values.password,
+        options: {
+          emailRedirectTo: redirectUrl,
+        },
+      });
+
+      if (error) {
+        toast({
+          title: "Não foi possível criar sua conta",
+          description: error.message || "Revise os dados e tente novamente.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Conta criada com sucesso",
+        description: "Agora vamos configurar sua obra em poucos passos.",
+      });
+
+      reset({ email: values.email, password: "" } as any);
+      await handlePostAuthNavigation();
+    } catch (error: any) {
+      toast({
+        title: "Erro inesperado",
+        description: error?.message || "Tente novamente em instantes.",
+        variant: "destructive",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const toggleMode = () => {
+    setMode((prev) => (prev === "login" ? "signup" : "login"));
+    reset({ email: "", password: "" } as any);
+  };
+
   return (
     <div className="page-shell">
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 pb-10 pt-8">
-        <header className="mb-6 space-y-2 text-center">
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-accent-foreground/80">
-            Minha Obra
-          </p>
-          <h1 className="text-2xl font-semibold leading-tight">Entre para acessar sua obra</h1>
+        <header className="mb-8 space-y-2 text-center">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-accent-foreground/80">Minha Obra</p>
+          <h1 className="text-2xl font-semibold leading-tight">
+            {mode === "login" ? "Entre para ver sua obra em números simples" : "Crie sua conta em poucos passos"}
+          </h1>
           <p className="text-sm text-muted-foreground">
-            Em breve esta tela terá o login completo com e-mail e senha. Por enquanto, você já consegue
-            testar o restante da experiência visual do app.
+            Use seu e-mail e uma senha segura. Você poderá acessar de qualquer dispositivo e manter o controle da
+            sua obra sempre à mão.
           </p>
         </header>
 
-        <section className="card-elevated space-y-3 p-5 text-sm text-muted-foreground">
-          <p>
-            O botão <span className="font-semibold">Entrar</span> da landing page já está apontando para
-            esta rota <span className="font-mono text-xs">/auth</span>, que será a porta de entrada do app.
-          </p>
-          <p>
-            Assim que o fluxo de autenticação estiver ativo, você vai conseguir acessar o painel interno
-            com seus dados de obra protegidos.
-          </p>
+        <section className="card-elevated p-5 animate-scale-in">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">E-mail</Label>
+              <Input
+                id="email"
+                type="email"
+                autoComplete="email"
+                placeholder="voce@email.com"
+                {...register("email")}
+              />
+              {errors.email && (
+                <p className="text-xs text-destructive">{errors.email.message as string}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password">Senha</Label>
+              <Input
+                id="password"
+                type="password"
+                autoComplete={mode === "login" ? "current-password" : "new-password"}
+                placeholder="Mínimo de 8 caracteres"
+                {...register("password")}
+              />
+              {errors.password && (
+                <p className="text-xs text-destructive">{errors.password.message as string}</p>
+              )}
+            </div>
+
+            {mode === "signup" && (
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirmar senha</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  autoComplete="new-password"
+                  placeholder="Repita a mesma senha"
+                  {...register("confirmPassword" as any)}
+                />
+                {"confirmPassword" in errors && (
+                  <p className="text-xs text-destructive">{(errors as any).confirmPassword?.message}</p>
+                )}
+              </div>
+            )}
+
+            <Button type="submit" className="mt-2 w-full hover-scale" size="lg" disabled={submitting}>
+              {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {mode === "login" ? "Entrar" : "Criar conta e continuar"}
+            </Button>
+          </form>
+
+          <div className="mt-4 space-y-2 text-center text-xs text-muted-foreground">
+            <button
+              type="button"
+              onClick={toggleMode}
+              className="w-full text-center text-[11px] font-medium text-primary hover:underline"
+            >
+              {mode === "login"
+                ? "Ainda não tem conta? Criar agora sem compromisso."
+                : "Já tem conta? Entrar com meu e-mail."}
+            </button>
+            <p>
+              Seus dados de obra ficam protegidos e só você decide quem pode enxergar os números, com links seguros
+              de compartilhamento.
+            </p>
+          </div>
         </section>
 
-        <div className="mt-6 text-center text-xs text-muted-foreground">
-          <p>
-            Se quiser, posso configurar agora o login completo com e-mail/senha e proteção das rotas
-            internas.
-          </p>
-        </div>
-
         <div className="mt-6 flex justify-center">
-          <Button variant="outline" size="sm" className="hover-scale" onClick={() => window.history.back()}>
-            Voltar
+          <Button
+            variant="outline"
+            size="sm"
+            className="hover-scale"
+            type="button"
+            onClick={() => navigate("/")}
+          >
+            Voltar para a página inicial
           </Button>
         </div>
       </main>
