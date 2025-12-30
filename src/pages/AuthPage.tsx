@@ -178,15 +178,47 @@ const AuthPage = () => {
         <header className="mb-8 space-y-2 text-center">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-accent-foreground/80">Minha Obra</p>
           <h1 className="text-2xl font-semibold leading-tight">
-            {mode === "login" ? "Entre para ver sua obra em números simples" : "Crie sua conta em poucos passos"}
+            {mode === "login" ? "Fazer login" : "Criar conta gratuita"}
           </h1>
           <p className="text-sm text-muted-foreground">
-            Use seu e-mail e uma senha segura. Você poderá acessar de qualquer dispositivo e manter o controle da
-            sua obra sempre à mão.
+            {mode === "login"
+              ? "Acesse seu painel de obra com e-mail e senha já cadastrados."
+              : "Leva menos de 1 minuto para criar sua conta e começar a organizar sua obra."}
           </p>
         </header>
 
         <section className="card-elevated p-5 animate-scale-in">
+          <div className="mb-5 flex gap-2 rounded-full bg-muted px-1 py-1 text-xs font-medium">
+            <button
+              type="button"
+              onClick={() => {
+                setMode("login");
+                reset({ email: "", password: "" } as any);
+              }}
+              className={`flex-1 rounded-full px-3 py-1.5 transition-colors ${
+                mode === "login"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Já tenho conta
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMode("signup");
+                reset({ email: "", password: "" } as any);
+              }}
+              className={`flex-1 rounded-full px-3 py-1.5 transition-colors ${
+                mode === "signup"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Criar conta gratuita
+            </button>
+          </div>
+
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">E-mail</Label>
@@ -239,15 +271,11 @@ const AuthPage = () => {
           </form>
 
           <div className="mt-4 space-y-2 text-center text-xs text-muted-foreground">
-            <button
-              type="button"
-              onClick={toggleMode}
-              className="w-full text-center text-[11px] font-medium text-primary hover:underline"
-            >
+            <p>
               {mode === "login"
-                ? "Ainda não tem conta? Criar agora sem compromisso."
-                : "Já tem conta? Entrar com meu e-mail."}
-            </button>
+                ? "Esqueceu a senha? Em breve você poderá recuperá-la diretamente por aqui."
+                : "Sem fidelidade e sem multa: você pode parar de usar quando quiser."}
+            </p>
             <p>
               Seus dados de obra ficam protegidos e só você decide quem pode enxergar os números, com links seguros
               de compartilhamento.
