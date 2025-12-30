@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2, LineChart, Shield, Wallet, CalendarDays, Crown, Star } from "lucide-react";
@@ -11,6 +11,35 @@ const etapaGastosData = [
   { name: "Acabamento", gasto: 180000 },
   { name: "Finalização", gasto: 30000 },
 ];
+
+const rotatingTestimonials = [
+  "Antes eu anotava em papel e ficava com medo de perder o controle. Agora vejo em segundos se a obra cabe no bolso.",
+  "Consigo enxergar o impacto de cada decisão na obra e conversar com o pedreiro com números na mão.",
+  "Mesmo morando longe da obra, acompanho gastos e etapas sem precisar pedir atualização todo dia.",
+];
+
+const SocialProofTestimonialRotator = () => {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % rotatingTestimonials.length);
+    }, 6000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <figure className="relative flex-1 rounded-xl bg-background/80 px-4 py-3 text-left shadow-sm">
+      <blockquote className="text-xs italic text-muted-foreground sm:text-sm">
+        “{rotatingTestimonials[index]}”
+      </blockquote>
+      <figcaption className="mt-2 text-[11px] font-medium text-foreground/80">
+        Depoimentos baseados em histórias reais de quem já passou por obra.
+      </figcaption>
+    </figure>
+  );
+};
 
 const Index = () => {
   const navigate = useNavigate();
@@ -103,12 +132,12 @@ const Index = () => {
               <h1>
                 Sua obra sob controle.
                 <br />
-                <span className="text-[hsl(var(--primary))]">Sem sustos nem estouro no orçamento.</span>
+                <span className="text-[hsl(var(--primary))]">Sem sustos, sem adivinhação no orçamento.</span>
               </h1>
               <p className="max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-                Veja em um painel simples quanto já foi gasto, o que ainda falta pagar e em que etapa a obra está.
-                Tudo organizado em um só lugar, para evitar atrasos, planejar os próximos pagamentos e decidir com
-                calma.
+                Veja, em minutos, quanto já saiu do seu bolso, o que ainda vem pela frente e se a obra está dentro
+                do combinado. Tudo em um painel simples, para você decidir com calma e evitar estouros de última
+                hora.
               </p>
             </div>
 
@@ -149,7 +178,10 @@ const Index = () => {
             </div>
             <div>
               <p className="font-semibold">Gastos em dia</p>
-              <p className="text-muted-foreground">Veja o que já foi pago, o que está previsto e evite sustos de última hora.</p>
+              <p className="text-muted-foreground">
+                Saiba exatamente o que já foi pago, o que vence nos próximos dias e evite sustos de caixa no meio da
+                obra.
+              </p>
             </div>
           </div>
 
@@ -159,7 +191,10 @@ const Index = () => {
             </div>
             <div>
               <p className="font-semibold">Orçamento sob controle</p>
-              <p className="text-muted-foreground">Acompanhe em % quanto da obra já está executado para não estourar o limite.</p>
+              <p className="text-muted-foreground">
+                Acompanhe em porcentagem quanto da obra já foi executado para decidir, com segurança, se pode gastar
+                mais ou se precisa segurar.
+              </p>
             </div>
           </div>
 
@@ -169,22 +204,39 @@ const Index = () => {
             </div>
             <div>
               <p className="font-semibold">Cronograma visível</p>
-              <p className="text-muted-foreground">Saiba em que etapa a obra está e evite atrasos por falta de planejamento.</p>
+              <p className="text-muted-foreground">
+                Veja em que etapa a obra está e quais são os próximos passos, para combinar prazos com equipe e
+                evitar remarcações.
+              </p>
             </div>
           </div>
+        </section>
+
+        {/* PROVA SOCIAL DINÂMICA */}
+        <section className="mt-10 flex flex-col gap-4 rounded-2xl border border-primary/20 bg-primary/5 px-4 py-4 text-xs sm:flex-row sm:items-center sm:justify-between sm:text-sm animate-fade-in">
+          <div className="space-y-1">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Prova social</p>
+            <p className="text-sm font-semibold sm:text-base">
+              Mais de <span className="text-[hsl(var(--primary))]">120 obras</span> já foram organizadas com o Minha
+              Obra.
+            </p>
+            <p className="text-xs text-muted-foreground sm:text-sm">
+              Cada obra representa uma família decidindo com mais calma onde colocar o dinheiro de construção.
+            </p>
+          </div>
+
+          <SocialProofTestimonialRotator />
         </section>
 
         {/* BENEFÍCIOS */}
         <section id="beneficios" className="mt-20 space-y-8 animate-fade-in">
           <header className="space-y-2 text-center">
             <p className="text-xs font-medium uppercase tracking-[0.16em] text-primary">Benefícios</p>
-            <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-              Pensado para quem está construindo pela primeira vez
-            </h2>
+            <h2>Pensado para quem está construindo pela primeira vez</h2>
             <p className="mx-auto max-w-2xl text-sm text-muted-foreground">
-              Você não precisa entender de engenharia para saber se a obra está indo bem. Mostramos o essencial
-              com frases curtas, exemplos práticos e indicadores em verde, amarelo e vermelho para você agir antes
-              de virar problema.
+              Em vez de planilhas difíceis, você enxerga sua obra com frases simples, gráficos em verde, amarelo e
+              vermelho e exemplos práticos. Assim, evita decisões no impulso e conversa melhor com quem te ajuda na
+              obra.
             </p>
           </header>
 
@@ -195,8 +247,8 @@ const Index = () => {
               </div>
               <h3 className="text-base font-semibold">Visão clara de custos</h3>
               <p className="text-sm text-muted-foreground">
-                Veja quanto já gastou, quanto ainda falta e onde está indo o dinheiro da obra, sem contas
-                escondidas nem surpresas no fim do mês.
+                Veja, em um só lugar, quanto já gastou, quanto ainda falta e em quais etapas o dinheiro está indo.
+                Isso te ajuda a dizer "sim" ou "não" para novos gastos com muito mais segurança.
               </p>
             </article>
 
@@ -206,8 +258,8 @@ const Index = () => {
               </div>
               <h3 className="text-base font-semibold">Pagamentos organizados</h3>
               <p className="text-sm text-muted-foreground">
-                Registre mão de obra, materiais e serviços em poucos toques. Tenha um histórico simples de tudo o que
-                foi pago e do que ainda está por vir.
+                Registre mão de obra, materiais e serviços em poucos toques. Nunca mais fique em dúvida se já pagou
+                alguém ou se aquele recibo está perdido em alguma gaveta.
               </p>
             </article>
 
@@ -217,8 +269,8 @@ const Index = () => {
               </div>
               <h3 className="text-base font-semibold">Etapas sem surpresas</h3>
               <p className="text-sm text-muted-foreground">
-                Acompanhe da fundação ao acabamento e veja rapidamente se alguma etapa está atrasando ou gastando mais
-                do que o combinado.
+                Acompanhe da fundação ao acabamento e veja rapidamente se alguma etapa está atrasando ou gastando
+                mais do que o combinado, para agir antes de virar dor de cabeça.
               </p>
             </article>
           </div>
