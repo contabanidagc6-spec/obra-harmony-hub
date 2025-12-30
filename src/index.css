@@ -112,14 +112,14 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground antialiased font-sans;
   }
 
   h1,
   h2,
   h3,
   h4 {
-    @apply tracking-tight font-semibold;
+    @apply tracking-tight font-semibold font-display;
   }
 
   .page-shell {
