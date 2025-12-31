@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle2, LineChart, Shield, Wallet, CalendarDays, Crown, Star } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, Tooltip, CartesianGrid, Cell } from "recharts";
@@ -65,8 +66,8 @@ const Index = () => {
             onClick={() => scrollToSection("topo")}
             className="flex items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
           >
-            <span className="h-7 w-7 rounded-xl bg-primary/10" aria-hidden="true" />
-            <div className="text-left leading-tight">
+            <Logo variant="compact" className="shrink-0" />
+            <div className="hidden text-left leading-tight sm:block">
               <p className="text-sm font-semibold tracking-tight">Minha Obra</p>
               <p className="text-[11px] text-muted-foreground">Controle total da sua construção</p>
             </div>

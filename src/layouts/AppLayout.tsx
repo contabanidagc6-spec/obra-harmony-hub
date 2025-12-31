@@ -5,6 +5,7 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from 
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
+import Logo from "@/components/Logo";
 
 type Obra = Tables<"obras">;
 
@@ -98,9 +99,12 @@ export const AppLayout = () => {
                 </div>
               </DrawerContent>
             </Drawer>
-            <Link to="/dashboard" className="flex flex-col leading-none">
-              <span className="text-sm font-semibold tracking-tight">Minha Obra</span>
-              <span className="text-[11px] text-muted-foreground">Painel da obra</span>
+            <Link to="/dashboard" className="flex items-center gap-2 leading-none">
+              <Logo variant="compact" className="shrink-0" />
+              <div className="flex flex-col">
+                <span className="text-sm font-semibold tracking-tight">Minha Obra</span>
+                <span className="text-[11px] text-muted-foreground">Painel da obra</span>
+              </div>
             </Link>
           </div>
 
