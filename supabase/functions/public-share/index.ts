@@ -6,51 +6,12 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const RATE_LIMIT_WINDOW_MS = 60_000; // 1 minuto
-const RATE_LIMIT_MAX_REQUESTS = 30; // por IP
-const rateLimitStore = new Map<string, { count: number; timestamp: number }>();
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitStore.get(ip);
-
-  if (!entry || now - entry.timestamp > RATE_LIMIT_WINDOW_MS) {
-    rateLimitStore.set(ip, { count: 1, timestamp: now });
-    return false;
-  }
-
-  entry.count += 1;
-  entry.timestamp = now;
-  rateLimitStore.set(ip, entry);
-
-  return entry.count > RATE_LIMIT_MAX_REQUESTS;
-}
-
-function isValidToken(token: string): boolean {
-  if (!token || typeof token !== "string") return false;
-  if (token.length < 32 || token.length > 255) return false;
-  return /^[a-zA-Z0-9_-]+$/.test(token);
-}
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const ip =
-      req.headers.get("x-forwarded-for") ??
-      req.headers.get("cf-connecting-ip") ??
-      req.headers.get("x-real-ip") ??
-      "unknown";
-
-    if (isRateLimited(ip)) {
-      return new Response(JSON.stringify({ error: "Muitas tentativas. Tente novamente mais tarde." }), {
-        status: 429,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
@@ -77,14 +38,6 @@ serve(async (req) => {
 
     if (!token) {
       return new Response(JSON.stringify({ error: "Token de compartilhamento não informado" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    if (!isValidToken(token)) {
-      console.warn("Tentativa de acesso com token inválido em public-share");
-      return new Response(JSON.stringify({ error: "Token inválido" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
