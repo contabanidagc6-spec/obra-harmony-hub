@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, Suspense, lazy } from "react";
 import { AppLayout } from "@/layouts/AppLayout";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -19,7 +19,10 @@ import { NovoGastoPage } from "./pages/NovoGastoPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import { SharedViewPage } from "./pages/SharedViewPage";
 import AuthPage from "./pages/AuthPage";
-import { ProtectedRoute } from "./layouts/ProtectedRoute";
+
+const LazyProtectedRoute = lazy(() =>
+  import("./layouts/ProtectedRoute").then((m) => ({ default: m.ProtectedRoute }))
+);
 
 const queryClient = new QueryClient();
 
@@ -47,16 +50,36 @@ const App = () => {
             <Route
               path="/onboarding"
               element={
-                <ProtectedRoute>
-                  <OnboardingPage />
-                </ProtectedRoute>
+                <Suspense
+                  fallback={
+                    <div className="page-shell">
+                      <main className="flex flex-1 items-center justify-center">
+                        <span className="text-sm text-muted-foreground">Carregando...</span>
+                      </main>
+                    </div>
+                  }
+                >
+                  <LazyProtectedRoute>
+                    <OnboardingPage />
+                  </LazyProtectedRoute>
+                </Suspense>
               }
             />
             <Route
               element={
-                <ProtectedRoute>
-                  <AppLayout />
-                </ProtectedRoute>
+                <Suspense
+                  fallback={
+                    <div className="page-shell">
+                      <main className="flex flex-1 items-center justify-center">
+                        <span className="text-sm text-muted-foreground">Carregando...</span>
+                      </main>
+                    </div>
+                  }
+                >
+                  <LazyProtectedRoute>
+                    <AppLayout />
+                  </LazyProtectedRoute>
+                </Suspense>
               }
             >
               <Route path="/dashboard" element={<DashboardPage />} />
