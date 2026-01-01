@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { getUserFriendlyErrorMessage } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 
 export const NovoGastoPage = () => {
@@ -28,6 +29,19 @@ export const NovoGastoPage = () => {
       toast({
         title: "Arquivo muito grande",
         description: "O tamanho máximo permitido é 10MB.",
+        variant: "destructive",
+      });
+      e.target.value = "";
+      return;
+    }
+
+    const allowedExtensions = ["jpg", "jpeg", "png", "gif", "webp", "pdf", "doc", "docx"];
+    const fileExt = file.name.split(".").pop()?.toLowerCase() ?? "";
+
+    if (!allowedExtensions.includes(fileExt)) {
+      toast({
+        title: "Tipo de arquivo não permitido",
+        description: "Envie apenas imagens, PDF, DOC ou DOCX.",
         variant: "destructive",
       });
       e.target.value = "";
@@ -97,12 +111,25 @@ export const NovoGastoPage = () => {
 
       // Upload de arquivo, se houver
       if (arquivo && gasto) {
-        const fileExt = arquivo.name.split(".").pop();
-        const fileName = `${user.id}/${gasto.id}.${fileExt}`;
+        const allowedExtensions = ["jpg", "jpeg", "png", "gif", "webp", "pdf", "doc", "docx"];
+        const fileExt = arquivo.name.split(".").pop()?.toLowerCase() ?? "";
+
+        if (!allowedExtensions.includes(fileExt)) {
+          throw new Error("Tipo de arquivo não permitido. Envie apenas imagens, PDF, DOC ou DOCX.");
+        }
+
+        const safeType = arquivo.type?.startsWith("image/")
+          ? "image"
+          : arquivo.type === "application/pdf"
+            ? "pdf"
+            : "document";
+
+        const safeOriginalName = arquivo.name.replace(/[^a-zA-Z0-9_.-]/g, "_");
+        const storageFileName = `${user.id}/${gasto.id}.${fileExt || "bin"}`;
 
         const { error: uploadError } = await supabase.storage
           .from("obra-files")
-          .upload(fileName, arquivo, { upsert: false });
+          .upload(storageFileName, arquivo, { upsert: false });
 
         if (uploadError) throw uploadError;
 
@@ -111,9 +138,9 @@ export const NovoGastoPage = () => {
           gasto_id: gasto.id,
           obra_id: obraId,
           etapa_id: etapaId,
-          nome_arquivo: arquivo.name,
-          tipo_arquivo: arquivo.type,
-          storage_path: fileName,
+          nome_arquivo: safeOriginalName,
+          tipo_arquivo: safeType,
+          storage_path: storageFileName,
           tamanho_bytes: arquivo.size,
         });
 
@@ -126,9 +153,13 @@ export const NovoGastoPage = () => {
       });
       navigate(-1);
     } catch (error: any) {
+      console.error("Erro ao salvar gasto:", error);
       toast({
         title: "Erro ao salvar gasto",
-        description: error.message || "Tente novamente mais tarde.",
+        description: getUserFriendlyErrorMessage(
+          error,
+          "Não foi possível salvar o gasto. Tente novamente.",
+        ),
         variant: "destructive",
       });
     } finally {
