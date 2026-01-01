@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { getUserFriendlyErrorMessage } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 
 const OnboardingPage = () => {
@@ -106,9 +107,13 @@ const OnboardingPage = () => {
 
       navigate("/dashboard");
     } catch (error: any) {
+      console.error("Erro ao criar obra:", error);
       toast({
         title: "Erro ao criar obra",
-        description: error.message || "Tente novamente mais tarde.",
+        description: getUserFriendlyErrorMessage(
+          error,
+          "Não foi possível criar a obra. Tente novamente.",
+        ),
         variant: "destructive",
       });
     } finally {

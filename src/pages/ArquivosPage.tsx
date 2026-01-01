@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { getUserFriendlyErrorMessage } from "@/lib/utils";
 import { Loader2, Upload, Download } from "lucide-react";
 
 interface Arquivo {
@@ -60,9 +61,13 @@ export const ArquivosPage = () => {
       if (error) throw error;
       setArquivos(data || []);
     } catch (error: any) {
+      console.error("Erro ao carregar arquivos:", error);
       toast({
         title: "Erro ao carregar arquivos",
-        description: error.message,
+        description: getUserFriendlyErrorMessage(
+          error,
+          "Não foi possível carregar os arquivos. Tente novamente.",
+        ),
         variant: "destructive",
       });
     } finally {
@@ -85,6 +90,19 @@ export const ArquivosPage = () => {
       return;
     }
 
+    const allowedExtensions = ["jpg", "jpeg", "png", "gif", "webp", "pdf", "doc", "docx"];
+    const fileExt = selectedFile.name.split(".").pop()?.toLowerCase() ?? "";
+
+    if (!allowedExtensions.includes(fileExt)) {
+      toast({
+        title: "Tipo de arquivo não permitido",
+        description: "Envie apenas imagens, PDF, DOC ou DOCX.",
+        variant: "destructive",
+      });
+      e.target.value = "";
+      return;
+    }
+
     setFile(selectedFile);
   };
 
@@ -94,7 +112,9 @@ export const ArquivosPage = () => {
 
     setUploading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) throw new Error("Usuário não autenticado");
 
       const { data: obras } = await supabase
@@ -111,12 +131,25 @@ export const ArquivosPage = () => {
       const formData = new FormData(e.currentTarget);
       const etapaId = formData.get("etapa") as string | null;
 
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+      const allowedExtensions = ["jpg", "jpeg", "png", "gif", "webp", "pdf", "doc", "docx"];
+      const fileExt = file.name.split(".").pop()?.toLowerCase() ?? "";
+
+      if (!allowedExtensions.includes(fileExt)) {
+        throw new Error("Tipo de arquivo não permitido. Envie apenas imagens, PDF, DOC ou DOCX.");
+      }
+
+      const safeType = file.type?.startsWith("image/")
+        ? "image"
+        : file.type === "application/pdf"
+          ? "pdf"
+          : "document";
+
+      const safeOriginalName = file.name.replace(/[^a-zA-Z0-9_.-]/g, "_");
+      const storageFileName = `${user.id}/${Date.now()}.${fileExt || "bin"}`;
 
       const { error: uploadError } = await supabase.storage
         .from("obra-files")
-        .upload(fileName, file, { upsert: false });
+        .upload(storageFileName, file, { upsert: false });
 
       if (uploadError) throw uploadError;
 
@@ -124,9 +157,9 @@ export const ArquivosPage = () => {
         obra_id: obraId,
         etapa_id: etapaId || null,
         gasto_id: null,
-        nome_arquivo: file.name,
-        tipo_arquivo: file.type,
-        storage_path: fileName,
+        nome_arquivo: safeOriginalName,
+        tipo_arquivo: safeType,
+        storage_path: storageFileName,
         tamanho_bytes: file.size,
       });
 
@@ -141,9 +174,13 @@ export const ArquivosPage = () => {
       setFile(null);
       fetchArquivos();
     } catch (error: any) {
+      console.error("Erro ao enviar arquivo:", error);
       toast({
         title: "Erro ao enviar arquivo",
-        description: error.message,
+        description: getUserFriendlyErrorMessage(
+          error,
+          "Não foi possível enviar o arquivo. Tente novamente.",
+        ),
         variant: "destructive",
       });
     } finally {
@@ -153,9 +190,7 @@ export const ArquivosPage = () => {
 
   const handleDownload = async (storagePath: string, nomeArquivo: string) => {
     try {
-      const { data, error } = await supabase.storage
-        .from("obra-files")
-        .download(storagePath);
+      const { data, error } = await supabase.storage.from("obra-files").download(storagePath);
 
       if (error) throw error;
 
@@ -163,12 +198,17 @@ export const ArquivosPage = () => {
       const a = document.createElement("a");
       a.href = url;
       a.download = nomeArquivo;
+      a.rel = "noopener noreferrer";
       a.click();
       URL.revokeObjectURL(url);
     } catch (error: any) {
+      console.error("Erro ao baixar arquivo:", error);
       toast({
         title: "Erro ao baixar arquivo",
-        description: error.message,
+        description: getUserFriendlyErrorMessage(
+          error,
+          "Não foi possível baixar o arquivo. Tente novamente.",
+        ),
         variant: "destructive",
       });
     }
@@ -187,9 +227,13 @@ export const ArquivosPage = () => {
       if (error) throw error;
       setPreviewUrl(data.signedUrl);
     } catch (error: any) {
+      console.error("Erro ao abrir arquivo:", error);
       toast({
         title: "Erro ao abrir arquivo",
-        description: error.message,
+        description: getUserFriendlyErrorMessage(
+          error,
+          "Não foi possível abrir o arquivo. Tente novamente.",
+        ),
         variant: "destructive",
       });
       setPreviewOpen(false);
@@ -383,13 +427,14 @@ export const ArquivosPage = () => {
             </div>
           ) : previewUrl && previewArquivo ? (
             <div className="space-y-3">
-              {previewArquivo.tipo_arquivo.startsWith("image/") ? (
+              {previewArquivo.tipo_arquivo.startsWith("image/") || previewArquivo.tipo_arquivo === "image" ? (
                 <img
                   src={previewUrl}
                   alt={previewArquivo.nome_arquivo}
                   className="max-h-80 w-full rounded-md object-contain"
                 />
-              ) : previewArquivo.tipo_arquivo === "application/pdf" ? (
+              ) :
+              previewArquivo.tipo_arquivo === "application/pdf" || previewArquivo.tipo_arquivo === "pdf" ? (
                 <iframe
                   src={previewUrl}
                   title={previewArquivo.nome_arquivo}
