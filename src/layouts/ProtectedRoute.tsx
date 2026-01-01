@@ -13,16 +13,21 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
 
-      if (!user) {
+        if (!user) {
+          navigate("/auth", { replace: true });
+          return;
+        }
+
+        setChecking(false);
+      } catch (error) {
+        console.error("Erro ao verificar sessão:", error);
         navigate("/auth", { replace: true });
-        return;
       }
-
-      setChecking(false);
     };
 
     checkAuth();
